@@ -1,18 +1,77 @@
-branchhours
+= branchhours: Show today's branch opening hours, taken from Google Calendars
 
-Grab opening hours from Google Calendar and write them to disk
+Github source: http://github.com/wdenton/branchhours/
+
+York University Libraries: http://www.library.yorku.ca/
+
+There are eight libraries at York University and we want to show
+today's openings hours for all of them on our home page.  
+
+I'd read Andrew Darby's article in Code4Lib Journal issue 2, "Using
+Google Calendar to Manage Library Website Hours"
+(http://journal.code4lib.org/articles/46), which gave me the idea for
+using Google Calendar.  It's a great article, and includes code and
+also lets you show who's on the reference desk, so have a look at it
+first.  To suit local needs, I decided to write something slightly
+different and do it in Ruby.
+
+Because our calendars are public, you should be able to run this
+program without any configuration.  It will show some output on STDERR
+and create ten small HTML files with out opening hours.
 
 == License
 
 Copyright (c) 2009 William Denton <wdenton@yorku.ca>.  Licensed under
 the MIT License.  See the included LICENSE file.
 
-== Description
+== Google Calendar
 
-= Google Calendar
+The API for Google Calendar is here:
 
-# Grab a sorted list of ten days worth of Bronman events.
-# curl "http://www.google.com/calendar/feeds/m7c4318hko4aum2kmucq0g7kts%40group.calendar.google.com/public/full?singleevents=true&ctz=America/Toronto&start-min=2009-06-18T00:00:00-04:00&start-max=2009-06-28T00:00:00-04:00&orderby=starttime&sortorder=ascending" | xmllint --format - > bronfman.xml 
+http://code.google.com/apis/calendar/docs/2.0/reference.html
 
-= Usage
+This program doesn't do any writing to calendars, just reading, so
+it's dead simple.
+
+The XML feed of the Bronfman Business Library's calendar (in the
+"full" projection, with all the details) is here:
+
+http://www.google.com/calendar/feeds/m7c4318hko4aum2kmucq0g7kts%40group.calendar.google.com/public/full
+
+I set the calendar to be public.  If you make the calendar private
+you'll have to use the private URL or authenticate, which is explained
+in the docs.
+
+Let's add some parameters to customize the calendar request:
+
+      singleevents=true                    # expand recurring events
+      ctz=America/Toronto                  # our time zone
+      start-min=2009-06-22T00:00:00-04:00  # start date
+      start-max=2009-07-02T00:00:00-04:00  # end date
+      orderby=starttime			   # for readability
+      sortorder=ascending                  # for readability
+
+Pipe the output to xmllint so it's more readable:
+
+curl "http://www.google.com/calendar/feeds/m7c4318hko4aum2kmucq0g7kts%40group.calendar.google.com/public/full?singleevents=true&ctz=America/Toronto&start-min=2009-06-22T00:00:00-04:00&start-max=2009-07-02T00:00:00-04:00&orderby=starttime&sortorder=ascending" | xmllint --format -
+
+The only stuff in the XML that I care about are these fields:
+
+<entry>
+  <title type="text">Bronfman 10 - 6</title>
+  <gd:when startTime="2009-06-26T09:00:00.000-04:00" endTime="2009-06-26T17:00:00.000-04:00"/>
+</entry>
+
+If the branch is closed for the day, I make an all-day event called
+"Closed."
+
+<entry>
+  <title type="text">Closed</title>
+  <gd:when startTime="2009-07-01" endTime="2009-07-02"/>
+</entry>
+
+== The configuration file: branchhours.yml
+
+== Usage
+
 

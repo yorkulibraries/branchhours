@@ -13,19 +13,21 @@ rescue Exception => e
 end
 
 def prettytime (time) 
-  # '9 AM' and 'noon' are much more readable than '09:00 AM' and '12:00 PM'
+  # '9 am' and 'noon' are much more readable than '09:00 AM' and '12:00 PM'
   nice = time.strftime('%I')
   nice = nice.slice(1,2) if (nice.to_i < 10)
   nice = nice + ":" + time.strftime('%M') unless (time.strftime('%M').to_i == 0)
   nice = nice + " " + time.strftime('%p')
+  nice.downcase!
   nice = "noon" if nice == '12 PM'
   return nice
 end
 
-# We're going to grab all events over the next ten days.
+# Get ready to give Google the start and end times for the daysInAdvance
+# range of days.
 # You may need to change the time zone.
 startmin = Time.now.strftime("%Y-%m-%dT06:00:00-05:00")
-startmax = (Time.now + 10*24*60*60).strftime("%Y-%m-%dT06:00:00-05:00")
+startmax = (Time.now + config['daysInAdvance']*24*60*60).strftime("%Y-%m-%dT06:00:00-05:00")
 
 # Hash to store opening hours, by date, then library
 schedule = Hash.new do |hash, key|
@@ -34,22 +36,35 @@ schedule = Hash.new do |hash, key|
   hash[key] = {}
 end
 
+STDERR.puts "Getting calendars from Google ..."
 config['libraries'].each do |library|
+  # The schedule hash will have YYYYMMDD dates as keys, and the
+  # values will be hashes where the key is the library name and
+  # the value is a human-readable string showing the opening hours
+  # (or that the branch is closed).
+
   calendarUrl = config['googleUrl'].gsub(/::ID::/, config[library]['id'])
   calendarUrl << "&start-min=" + startmin
   calendarUrl << "&start-max=" + startmax
-  puts library
-  # puts "  " + config["#{library}Name"]
+  STDERR.puts "  " + library
   # puts "  " + calendarUrl
+
   begin
     calendarXML = Net::HTTP.get_response(URI.parse(calendarUrl)).body
   rescue Exception => e
-    puts "Couldn't get " + config[library]['name'] + "calendar from Google"
-    puts "Can't connect to Google? Aborting"
-    puts e
+    STDERR.puts "Couldn't get #{library} calendar from Google"
+    STDERR.puts "Can't connect to Google!? Aborting"
+    STDERR.puts e
     exit
   end
-  doc = REXML::Document.new(calendarXML)
+
+  begin
+    doc = REXML::Document.new(calendarXML)
+  rescue Exception => e
+    STDERR.puts "Can't parse the XML for the #{library} calendar!? Aborting"
+    STDERR.puts e
+    exit
+  end
   doc.root.each_element('//entry') do |entry|
     # TODO Check to see if the branch is closed.
     date = Time.parse(entry.elements['gd:when'].attributes['startTime']).strftime("%Y%m%d").to_s
@@ -57,39 +72,40 @@ config['libraries'].each do |library|
     close = prettytime(Time.parse(entry.elements['gd:when'].attributes['endTime']))
     hours = open + " - " + close
     hours = "closed" if entry.elements['title'].text =~ /closed/i
-    puts date + " " + hours
+    # puts date + " " + hours
     schedule[date][library] = hours
   end
+
 end
 
-schedule.keys.each do |day|
-  puts day
-  schedule[day].each do |library, hours|
-    # puts library + ": " + hours
-    libraryLine = "<a href=\"#{config[library]['url']}\">#{config[library]['name']}</a>: #{schedule[day][library]}"
-    config['template'].gsub!(/::#{library.upcase}::/, libraryLine)
+STDERR.puts "Writing calendars ..."
+schedule.keys.sort {|a,b| a <=> b}.each do |day|
+  # Go through each day for which we collected calendar information,
+  # and dump out fragments of HTML to disk, suitable for including
+  # in a web page.
+  STDERR.puts day
+  dayhtml = ''
+  dayhtml << config['template']
+  begin
+    dayfile = File.new("hours-#{day}.html", "w")
+    dayfile.chmod(0664)
+  rescue Exception => e
+    STDERR.puts "Problem creating #{day}.html. Aborting"
+    STDERR.puts e
+    exit
   end
-#  bronfmanLine = <<-LINE #).gsub!(/^\s+/, '')
-#    <a href="#{config['bronfmanUrl']}">#{config['bronfmanName']}</a>: #{schedule[day]['bronfman']}
-#    LINE
-#  bronfmanLine = <<-LINE #).gsub!(/^\s+/, '')
-#    <a href="#{config['bronfmanUrl']}">#{config['bronfmanName']}</a>: #{schedule[day]['bronfman']}
-#    LINE
-
-  puts config['template']
-
+  config['libraries'].each do |library|
+    if schedule[day][library].nil?
+      STDERR.puts "No hours information for #{library} on #{day}!"
+      STDERR.puts "Please fix and rerun.  Aborting"
+      exit
+    end
+    STDERR.puts "  " + library + ": " + schedule[day][library]
+    # Build up some HTML for each library, and then replace 
+    # ::LIBRARY:: in the template with that HTML.
+    libraryLine = "<a href=\"#{config[library]['url']}\">#{config[library]['name']}</a>: #{schedule[day][library]}"
+    dayhtml.gsub!(/::#{library.upcase}::/, libraryLine)
+  end
+  dayfile.write(dayhtml)
 end
-
-# p schedule
-
-#file = File.new("bronfman.xml")
-#doc = REXML::Document.new(file)
-
-#doc.root.each_element('//entry') do |entry|
-#  # Check to see if the branch is closed.
-#  open = Time.parse(entry.elements['gd:when'].attributes['startTime'])
-#  close = Time.parse(entry.elements['gd:when'].attributes['endTime'])
-#  puts open.strftime("%Y%m%d") +": " + prettytime(open) + " - " + prettytime(close)  
-#end
-
 

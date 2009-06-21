@@ -1,18 +1,53 @@
 # Config file for YUL calendars on Google.
 
 ---
-libraries: # Library must have corresponding LibraryURL below
-- archives
-- bronfman
-#- frost
-#- law
-#- map
-#- scott
-#- smil
-#- steacie
 
 # Google URL information. start-min and start-max will be appended.
-googleUrl: http://www.google.com/calendar/feeds/::ID::@group.calendar.google.com/public/full?singleevents=true&ctz=America/Toronto&orderby=starttime&sortorder=ascending
+# Change time zone as necessary.
+# When getting URLs by hand, append &orderby=starttime&sortorder=ascending
+# to make it more readable.
+googleUrl: http://www.google.com/calendar/feeds/::ID::@group.calendar.google.com/public/full?singleevents=true&ctz=America/Toronto
+
+# Number of days of calendar information to grab at once.
+daysInAdvance: 10
+
+template: |
+  <div id="hours">
+  <p>
+  ::SCOTT::
+  </p>
+  <p>
+  ::ARCHIVES:: 
+  </p>
+  <p>
+  ::SMIL::
+  </p>
+  <p>
+  ::MAP::
+  </p>
+  <p>
+  ::BRONFMAN::
+  </p>
+  <p>
+  ::FROST::
+  </p>
+  <p>
+  ::LAW::
+  </p>
+  <p>
+  ::STEACIE::
+  </p>
+  </div>
+
+libraries: # Each library must have a corresponding section below
+- archives
+- bronfman
+- frost
+- law
+- map
+- scott
+- smil
+- steacie
 
 archives:
   name: Clara Thomas Archives and Special Collections
@@ -27,40 +62,31 @@ bronfman:
 frost:
   name: Frost Library (Glendon)
   id: m6imnub2uuugc472mgbjshe7dk
-  url:
+  url: http://www.library.yorku.ca/ccm/Frost/
 
 law:
   name: Osgoode Law Library
   id: bi3cua07pdt6r9qt81r5nvtqs8
-  url:
+  url: http://library.osgoode.yorku.ca/
 
 map:
   name: Map Library
   id: 1nrnldvrvqbvoq2ctgsjct9nn8
-  url: 
+  url: http://www.library.yorku.ca/ccm/Map/
 
 scott:
   name: Scott Library
   id: rcmuv3rj2tk8kjcaja59njl1gs
-  url: 
+  url: http://www.library.yorku.ca/ccm/Home/About/scottlibrary.htm
 
 smil:
   name: Sound and Moving Image Library
   id: pri08tmnju1th02vv37qmrs8ic
-  url: 
+  url: http://www.library.yorku.ca/ccm/SMIL/
 
 steacie:
   name: Steacie Science and Engineering Library
   id: ss5b4rsslpjk0allmc0ej2b0no
-  url:
+  url: http://www.library.yorku.ca/ccm/Steacie/
 
-template: |
-  <div id="hours">
-  <p>
-  ::ARCHIVES:: 
-  </p>
-  <p>
-  ::BRONFMAN::
-  </p>
-  </div>
 
