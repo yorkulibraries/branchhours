@@ -4,37 +4,63 @@
 libraries: # Library must have corresponding LibraryURL below
 - archives
 - bronfman
-- frost
-- law
-- map
-- scott
-- smil
-- steacie
+#- frost
+#- law
+#- map
+#- scott
+#- smil
+#- steacie
 
 # Google URL information. start-min and start-max will be appended.
 googleUrl: http://www.google.com/calendar/feeds/::ID::@group.calendar.google.com/public/full?singleevents=true&ctz=America/Toronto&orderby=starttime&sortorder=ascending
 
-bronfmanName: Bronfman Business Library
-bronfmanID: m7c4318hko4aum2kmucq0g7kts
+archives:
+  name: Clara Thomas Archives and Special Collections
+  id: 85mt13bcn119dgs3svl0vp4l5c
+  url: http://www.library.yorku.ca/ccm/ArchivesSpecialCollections/
 
-archivesName: Clara Thomas Archives and Special Collections
-archivesID: 85mt13bcn119dgs3svl0vp4l5c
+bronfman:
+  name: Bronfman Business Library
+  id: m7c4318hko4aum2kmucq0g7kts
+  url: http://www.library.yorku.ca/ccm/BG/
 
-frostName: Frost Library
-frostID: m6imnub2uuugc472mgbjshe7dk
+frost:
+  name: Frost Library (Glendon)
+  id: m6imnub2uuugc472mgbjshe7dk
+  url:
 
-lawName: Osgoode Hall Law Library
-lawID: bi3cua07pdt6r9qt81r5nvtqs8
+law:
+  name: Osgoode Law Library
+  id: bi3cua07pdt6r9qt81r5nvtqs8
+  url:
 
-mapName: Map Library
-mapID: 1nrnldvrvqbvoq2ctgsjct9nn8
+map:
+  name: Map Library
+  id: 1nrnldvrvqbvoq2ctgsjct9nn8
+  url: 
 
-scottName: Scott Library
-scottID: rcmuv3rj2tk8kjcaja59njl1gs
+scott:
+  name: Scott Library
+  id: rcmuv3rj2tk8kjcaja59njl1gs
+  url: 
 
-smilName: Sound and Moving Image Library
-smilID: pri08tmnju1th02vv37qmrs8ic
+smil:
+  name: Sound and Moving Image Library
+  id: pri08tmnju1th02vv37qmrs8ic
+  url: 
 
-steacieName: Steacie Science and Engineering Library
-steacieID: ss5b4rsslpjk0allmc0ej2b0no
+steacie:
+  name: Steacie Science and Engineering Library
+  id: ss5b4rsslpjk0allmc0ej2b0no
+  url:
+
+template: |
+  <div id="hours">
+  <p>
+  ::ARCHIVES:: 
+  </p>
+  <p>
+  ::BRONFMAN::
+  </p>
+  </div>
 

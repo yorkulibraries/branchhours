@@ -27,8 +27,15 @@ end
 startmin = Time.now.strftime("%Y-%m-%dT06:00:00-05:00")
 startmax = (Time.now + 10*24*60*60).strftime("%Y-%m-%dT06:00:00-05:00")
 
+# Hash to store opening hours, by date, then library
+schedule = Hash.new do |hash, key|
+  # Ruby doesn't create a hash of hashes on the fly like Perl, so
+  # I'm using this from http://www.ruby-forum.com/topic/140570
+  hash[key] = {}
+end
+
 config['libraries'].each do |library|
-  calendarUrl = config['googleUrl'].gsub(/::ID::/, config["#{library}ID"])
+  calendarUrl = config['googleUrl'].gsub(/::ID::/, config[library]['id'])
   calendarUrl << "&start-min=" + startmin
   calendarUrl << "&start-max=" + startmax
   puts library
@@ -37,7 +44,7 @@ config['libraries'].each do |library|
   begin
     calendarXML = Net::HTTP.get_response(URI.parse(calendarUrl)).body
   rescue Exception => e
-    puts "Couldn't get " + config["#{library}Name"] + "calendar from Google"
+    puts "Couldn't get " + config[library]['name'] + "calendar from Google"
     puts "Can't connect to Google? Aborting"
     puts e
     exit
@@ -45,14 +52,35 @@ config['libraries'].each do |library|
   doc = REXML::Document.new(calendarXML)
   doc.root.each_element('//entry') do |entry|
     # TODO Check to see if the branch is closed.
-    date = Time.parse(entry.elements['gd:when'].attributes['startTime']).strftime("%Y%m%d")
+    date = Time.parse(entry.elements['gd:when'].attributes['startTime']).strftime("%Y%m%d").to_s
     open = prettytime(Time.parse(entry.elements['gd:when'].attributes['startTime']))
     close = prettytime(Time.parse(entry.elements['gd:when'].attributes['endTime']))
     hours = open + " - " + close
     hours = "closed" if entry.elements['title'].text =~ /closed/i
     puts date + " " + hours
+    schedule[date][library] = hours
   end
 end
+
+schedule.keys.each do |day|
+  puts day
+  schedule[day].each do |library, hours|
+    # puts library + ": " + hours
+    libraryLine = "<a href=\"#{config[library]['url']}\">#{config[library]['name']}</a>: #{schedule[day][library]}"
+    config['template'].gsub!(/::#{library.upcase}::/, libraryLine)
+  end
+#  bronfmanLine = <<-LINE #).gsub!(/^\s+/, '')
+#    <a href="#{config['bronfmanUrl']}">#{config['bronfmanName']}</a>: #{schedule[day]['bronfman']}
+#    LINE
+#  bronfmanLine = <<-LINE #).gsub!(/^\s+/, '')
+#    <a href="#{config['bronfmanUrl']}">#{config['bronfmanName']}</a>: #{schedule[day]['bronfman']}
+#    LINE
+
+  puts config['template']
+
+end
+
+# p schedule
 
 #file = File.new("bronfman.xml")
 #doc = REXML::Document.new(file)
