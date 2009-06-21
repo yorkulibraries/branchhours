@@ -1,0 +1,67 @@
+#!/usr/bin/ruby -w
+
+require 'net/http'
+require 'rexml/document'
+require 'time'
+require 'yaml'
+
+begin
+  config = YAML.load_file('branchhours.yml')
+rescue Exception => e
+  puts e
+  exit
+end
+
+def prettytime (time) 
+  # '9 AM' and 'noon' are much more readable than '09:00 AM' and '12:00 PM'
+  nice = time.strftime('%I')
+  nice = nice.slice(1,2) if (nice.to_i < 10)
+  nice = nice + ":" + time.strftime('%M') unless (time.strftime('%M').to_i == 0)
+  nice = nice + " " + time.strftime('%p')
+  nice = "noon" if nice == '12 PM'
+  return nice
+end
+
+# We're going to grab all events over the next ten days.
+# You may need to change the time zone.
+startmin = Time.now.strftime("%Y-%m-%dT06:00:00-05:00")
+startmax = (Time.now + 10*24*60*60).strftime("%Y-%m-%dT06:00:00-05:00")
+
+config['libraries'].each do |library|
+  calendarUrl = config['googleUrl'].gsub(/::ID::/, config["#{library}ID"])
+  calendarUrl << "&start-min=" + startmin
+  calendarUrl << "&start-max=" + startmax
+  puts library
+  # puts "  " + config["#{library}Name"]
+  # puts "  " + calendarUrl
+  begin
+    calendarXML = Net::HTTP.get_response(URI.parse(calendarUrl)).body
+  rescue Exception => e
+    puts "Couldn't get " + config["#{library}Name"] + "calendar from Google"
+    puts "Can't connect to Google? Aborting"
+    puts e
+    exit
+  end
+  doc = REXML::Document.new(calendarXML)
+  doc.root.each_element('//entry') do |entry|
+    # TODO Check to see if the branch is closed.
+    date = Time.parse(entry.elements['gd:when'].attributes['startTime']).strftime("%Y%m%d")
+    open = prettytime(Time.parse(entry.elements['gd:when'].attributes['startTime']))
+    close = prettytime(Time.parse(entry.elements['gd:when'].attributes['endTime']))
+    hours = open + " - " + close
+    hours = "closed" if entry.elements['title'].text =~ /closed/i
+    puts date + " " + hours
+  end
+end
+
+#file = File.new("bronfman.xml")
+#doc = REXML::Document.new(file)
+
+#doc.root.each_element('//entry') do |entry|
+#  # Check to see if the branch is closed.
+#  open = Time.parse(entry.elements['gd:when'].attributes['startTime'])
+#  close = Time.parse(entry.elements['gd:when'].attributes['endTime'])
+#  puts open.strftime("%Y%m%d") +": " + prettytime(open) + " - " + prettytime(close)  
+#end
+
+

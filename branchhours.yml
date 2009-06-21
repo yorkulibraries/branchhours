@@ -1,0 +1,40 @@
+# Config file for YUL calendars on Google.
+
+---
+libraries: # Library must have corresponding LibraryURL below
+- archives
+- bronfman
+- frost
+- law
+- map
+- scott
+- smil
+- steacie
+
+# Google URL information. start-min and start-max will be appended.
+googleUrl: http://www.google.com/calendar/feeds/::ID::@group.calendar.google.com/public/full?singleevents=true&ctz=America/Toronto&orderby=starttime&sortorder=ascending
+
+bronfmanName: Bronfman Business Library
+bronfmanID: m7c4318hko4aum2kmucq0g7kts
+
+archivesName: Clara Thomas Archives and Special Collections
+archivesID: 85mt13bcn119dgs3svl0vp4l5c
+
+frostName: Frost Library
+frostID: m6imnub2uuugc472mgbjshe7dk
+
+lawName: Osgoode Hall Law Library
+lawID: bi3cua07pdt6r9qt81r5nvtqs8
+
+mapName: Map Library
+mapID: 1nrnldvrvqbvoq2ctgsjct9nn8
+
+scottName: Scott Library
+scottID: rcmuv3rj2tk8kjcaja59njl1gs
+
+smilName: Sound and Moving Image Library
+smilID: pri08tmnju1th02vv37qmrs8ic
+
+steacieName: Steacie Science and Engineering Library
+steacieID: ss5b4rsslpjk0allmc0ej2b0no
+

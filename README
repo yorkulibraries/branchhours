@@ -1,0 +1,18 @@
+branchhours
+
+Grab opening hours from Google Calendar and write them to disk
+
+== License
+
+Copyright (c) 2009 William Denton <wdenton@yorku.ca>.  Licensed under
+the MIT License.  See the included LICENSE file.
+
+== Description
+
+= Google Calendar
+
+# Grab a sorted list of ten days worth of Bronman events.
+# curl "http://www.google.com/calendar/feeds/m7c4318hko4aum2kmucq0g7kts%40group.calendar.google.com/public/full?singleevents=true&ctz=America/Toronto&start-min=2009-06-18T00:00:00-04:00&start-max=2009-06-28T00:00:00-04:00&orderby=starttime&sortorder=ascending" | xmllint --format - > bronfman.xml 
+
+= Usage
+
