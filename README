@@ -1,6 +1,6 @@
 = branchhours: Show today's branch opening hours, taken from Google Calendars
 
-Github source: http://github.com/wdenton/branchhours/
+Source: http://github.com/wdenton/branchhours/
 
 York University Libraries: http://www.library.yorku.ca/
 
@@ -18,6 +18,11 @@ different and do it in Ruby.
 Because our calendars are public, you should be able to run this
 program without any configuration.  It will show some output on STDERR
 and create ten small HTML files with out opening hours.
+
+branchhours generates files named YYYYMMDD.html.  You can include them
+directly in a web page, or, for simplicity, you can just include
+today.html.  Run branchhourslink every night to update the symlink
+that makes today.html point to the right file.
 
 == License
 
@@ -55,7 +60,7 @@ Pipe the output to xmllint so it's more readable:
 
 curl "http://www.google.com/calendar/feeds/m7c4318hko4aum2kmucq0g7kts%40group.calendar.google.com/public/full?singleevents=true&ctz=America/Toronto&start-min=2009-06-22T00:00:00-04:00&start-max=2009-07-02T00:00:00-04:00&orderby=starttime&sortorder=ascending" | xmllint --format -
 
-The only stuff in the XML that I care about are these fields:
+All I care about in the XML are these fields:
 
 <entry>
   <title type="text">Bronfman 10 - 6</title>
@@ -72,6 +77,60 @@ If the branch is closed for the day, I make an all-day event called
 
 == The configuration file: branchhours.yml
 
+googleURL: URL of a calendar feed, which will be edited to give
+an exact URL for each branch's calendar.
+
+daysInAdvance: number of days of calendar information to grab at once.
+
+outputDir: where to put the generated HTML.
+
+libraries: list of libraries (with short names)
+
+For each library (eg. "bronfman") in the library array, there should
+be a corresponding entry that looks like this:
+
+  bronfman:
+    name: Bronfman Business Library
+    id: m7c4318hko4aum2kmucq0g7kts
+    url: http://www.library.yorku.ca/ccm/BG/
+
+The ID is the Google Calendar ID that is the unique part of the URL
+used to get the calendar feed.
+
+template: the HTML template that will be used when files are generated
+for inclusion in the home page.  If there is a library named "bronfman"
+in the libaries list, then its hours will go where ::BRONFMAN:: is in
+the template.
+
 == Usage
+
+After editing the configuration file and making sure outputDir exists,
+you can probably run the program without any arguments and it will
+work:
+
+./branchhours
+
+Make it verbose to see what it's doing:
+
+./branchhours --verbose
+
+When you have it in production you'll probably want to run it from cron:
+
+# Get ten (by default) days of opening hours once a week
+30 7 * * Mon /path/to/branchhours --config /path/to/branchhours.yml
+
+branchhourslink will handle symlinking so that you only ever need to
+inlcude today.html in a web page.
+
+# Update the symlink nightly to point to the right hours
+55 23 * * * /path/to/branchhourslink --config /path/to/branchhours.yml --date tomorrow
+# or since using today's date is the default you can just run
+@midnight * * * /path/to/branchhourslink --config /path/to/branchhours.yml
+
+[Check on redirection and add e-mail to get errors.]
+
+[How to include in a web page]
+
+
 
 

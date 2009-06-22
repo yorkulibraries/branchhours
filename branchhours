@@ -1,19 +1,39 @@
 #!/usr/bin/ruby -w
 
+# branchhours
+#
+# Show today's branch opening hours, taken from Google Calendars
+#
+# William Denton <wdenton@yorku.ca>
+# http://github.com/wdenton/branchhours/
+
 require 'net/http'
+require 'optparse'
 require 'rexml/document'
 require 'time'
 require 'yaml'
 
+options = {}
+options[:verbose] = false
+options[:config]  = 'branchhours.yml'
+
+OptionParser.new do |opts|
+  opts.banner = "Usage: branchhours [options]"
+  opts.on("-c", "--config configFile", "specify configuration file") do |configFile|
+    options[:config] = configFile
+  end
+  opts.on("-v", "--verbose",  "be verbose") { options[:verbose] = true }
+end.parse!
+
 begin
-  config = YAML.load_file('branchhours.yml')
+  config = YAML.load_file(options[:config])
 rescue Exception => e
   puts e
-  exit
+  exit 1
 end
 
 def prettytime (time) 
-  # '9 am' and 'noon' are much more readable than '09:00 AM' and '12:00 PM'
+  # '9 am' and 'noon' are better than '09:00 AM' and '12:00 PM'
   nice = time.strftime('%I')
   nice = nice.slice(1,2) if (nice.to_i < 10)
   nice = nice + ":" + time.strftime('%M') unless (time.strftime('%M').to_i == 0)
@@ -36,17 +56,17 @@ schedule = Hash.new do |hash, key|
   hash[key] = {}
 end
 
-STDERR.puts "Getting calendars from Google ..."
+STDERR.puts "Getting calendars from Google ..."  if options[:verbose]
 config['libraries'].each do |library|
   # The schedule hash will have YYYYMMDD dates as keys, and the
   # values will be hashes where the key is the library name and
   # the value is a human-readable string showing the opening hours
-  # (or that the branch is closed).
+  # (or that the library is closed).
 
   calendarUrl = config['googleUrl'].gsub(/::ID::/, config[library]['id'])
   calendarUrl << "&start-min=" + startmin
   calendarUrl << "&start-max=" + startmax
-  STDERR.puts "  " + library
+  STDERR.puts "  " + library if options[:verbose]
   # puts "  " + calendarUrl
 
   begin
@@ -55,7 +75,7 @@ config['libraries'].each do |library|
     STDERR.puts "Couldn't get #{library} calendar from Google"
     STDERR.puts "Can't connect to Google!? Aborting"
     STDERR.puts e
-    exit
+    exit 1
   end
 
   begin
@@ -63,49 +83,51 @@ config['libraries'].each do |library|
   rescue Exception => e
     STDERR.puts "Can't parse the XML for the #{library} calendar!? Aborting"
     STDERR.puts e
-    exit
+    exit 1
   end
   doc.root.each_element('//entry') do |entry|
-    # TODO Check to see if the branch is closed.
     date = Time.parse(entry.elements['gd:when'].attributes['startTime']).strftime("%Y%m%d").to_s
     open = prettytime(Time.parse(entry.elements['gd:when'].attributes['startTime']))
     close = prettytime(Time.parse(entry.elements['gd:when'].attributes['endTime']))
     hours = open + " - " + close
     hours = "closed" if entry.elements['title'].text =~ /closed/i
-    # puts date + " " + hours
     schedule[date][library] = hours
   end
 
 end
 
-STDERR.puts "Writing calendars ..."
+STDERR.puts "Writing calendars ..." if options[:verbose]
 schedule.keys.sort {|a,b| a <=> b}.each do |day|
   # Go through each day for which we collected calendar information,
   # and dump out fragments of HTML to disk, suitable for including
   # in a web page.
-  STDERR.puts day
+
+  STDERR.puts day if options[:verbose]
   dayhtml = ''
   dayhtml << config['template']
   begin
-    dayfile = File.new("hours-#{day}.html", "w")
+    dayfile = File.new("#{config['outputDir']}/#{day}.html", "w")
     dayfile.chmod(0664)
   rescue Exception => e
-    STDERR.puts "Problem creating #{day}.html. Aborting"
+    STDERR.puts "Problem creating #{config['outputDir']}/#{day}.html. Aborting"
     STDERR.puts e
-    exit
+    exit 1
   end
+
   config['libraries'].each do |library|
     if schedule[day][library].nil?
       STDERR.puts "No hours information for #{library} on #{day}!"
       STDERR.puts "Please fix and rerun.  Aborting"
       exit
     end
-    STDERR.puts "  " + library + ": " + schedule[day][library]
-    # Build up some HTML for each library, and then replace 
-    # ::LIBRARY:: in the template with that HTML.
+    STDERR.puts "  " + library + ": " + schedule[day][library] if options[:verbose]
+    # Replace ::LIBRARY:: in the template with some linked name and hours.
     libraryLine = "<a href=\"#{config[library]['url']}\">#{config[library]['name']}</a>: #{schedule[day][library]}"
     dayhtml.gsub!(/::#{library.upcase}::/, libraryLine)
   end
+
   dayfile.write(dayhtml)
+
 end
+
 

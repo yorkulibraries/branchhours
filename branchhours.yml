@@ -11,6 +11,9 @@ googleUrl: http://www.google.com/calendar/feeds/::ID::@group.calendar.google.com
 # Number of days of calendar information to grab at once.
 daysInAdvance: 10
 
+outputDir: /var/www/hours
+defaultFile: today.html
+
 template: |
   <div id="hours">
   <p>

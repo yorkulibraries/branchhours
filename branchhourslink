@@ -18,14 +18,14 @@ options[:date]    = 'today'
 options[:verbose] = false
 
 OptionParser.new do |opts|
-  opts.banner = "Usage: branchhourslink [-c configFile] [-d date] [-v] "
-  opts.on("-c", "--config c", "Configuration file") do |f|
-    options[:config] = f
+  opts.banner = "Usage: branchhourslink [options]"
+  opts.on("-c", "--config configFile", "specify configuration file") do |configFile|
+    options[:config] = configFile
   end
-  opts.on("-d", "--date d", "Date to make default") do |d|
-    options[:date] = d
+  opts.on("-d", "--date date", "default day (today, tomorrow, YYYYMMDD)") do |date|
+    options[:date] = date
   end		     
-  opts.on("-v", "--verbose",  "Run verbosely") { options[:verbose] = true }
+  opts.on("-v", "--verbose",  "be verbose") { options[:verbose] = true }
 end.parse!
 
 begin
