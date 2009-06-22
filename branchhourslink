@@ -1,0 +1,60 @@
+#!/usr/bin/ruby -w
+
+# branchhourslink
+#
+# Make symlink so you can always include the same file in a web page
+# and not have to figure out the date
+#
+# William Denton <wdenton@yorku.ca>
+# http://github.com/wdenton/branchhours/
+
+require 'optparse'
+require 'time'
+require 'yaml'
+
+options = {}
+options[:config]  = 'branchhours.yml'
+options[:date]    = 'today'
+options[:verbose] = false
+
+OptionParser.new do |opts|
+  opts.banner = "Usage: branchhourslink [-c configFile] [-d date] [-v] "
+  opts.on("-c", "--config c", "Configuration file") do |f|
+    options[:config] = f
+  end
+  opts.on("-d", "--date d", "Date to make default") do |d|
+    options[:date] = d
+  end		     
+  opts.on("-v", "--verbose",  "Run verbosely") { options[:verbose] = true }
+end.parse!
+
+begin
+  config = YAML.load_file(options[:config])
+rescue Exception => e
+  puts e
+  exit 1
+end
+
+if options[:date] =~ /today/i
+  yyyymmdd = Time.now.strftime("%Y%m%d")
+elsif options[:date] =~ /tomorrow/i
+  yyyymmdd = (Time.now + 24*60*60).strftime("%Y%m%d")
+else 
+  yyyymmdd = options[:date]
+end
+
+defaultFilePath = config['outputDir'] + "/" + config['defaultFile']
+targetFilePath  = config['outputDir'] + "/" + yyyymmdd + ".html"
+
+STDERR.puts "#{defaultFilePath} -> #{targetFilePath}" if options[:verbose]
+
+# Finally, make the symlink so we can always 
+begin
+  File.delete(defaultFilePath) if File.exist?(defaultFilePath)
+  File.symlink(targetFilePath, defaultFilePath) 
+rescue Exception => e
+  STDERR.puts "Could not create symlink to today's hours: #{e}"
+  STDERR.puts "Hours information may be incorrect on your web site"
+  exit 1
+end
+
