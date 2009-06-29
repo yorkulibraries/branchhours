@@ -6,7 +6,7 @@
 # Change time zone as necessary.
 # When getting URLs by hand, append &orderby=starttime&sortorder=ascending
 # to make it more readable.
-googleUrl: http://www.google.com/calendar/feeds/::ID::@group.calendar.google.com/public/full?singleevents=true&ctz=America/Toronto
+googleUrl: http://www.google.com/calendar/feeds/::ID::@group.calendar.google.com/public/full?singleevents=true&ctz=America/Toronto&orderby=starttime&sortorder=ascending
 
 # Number of days of calendar information to grab at once.
 daysInAdvance: 10
@@ -45,12 +45,12 @@ template: |
 libraries: # Each library must have a corresponding section below
 - archives
 - bronfman
-- frost
-- law
-- map
-- scott
-- smil
-- steacie
+#- frost
+#- law
+#- map
+#- scott
+#- smil
+#- steacie
 
 archives:
   name: Clara Thomas Archives and Special Collections
