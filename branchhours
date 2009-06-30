@@ -10,6 +10,7 @@
 require 'net/http'
 require 'optparse'
 require 'rexml/document'
+require 'date'
 require 'time'
 require 'yaml'
 
@@ -46,8 +47,8 @@ end
 # Get ready to give Google the start and end times for the daysInAdvance
 # range of days.
 # You may need to change the time zone.
-startmin = Time.now.strftime("%Y-%m-%dT00:00:00-05:00")
-startmax = (Time.now + (config['daysInAdvance'])*24*60*60).strftime("%Y-%m-%dT23:59:59-05:00")
+startmin = Time.now.strftime("%Y-%m-%dT06:00:00-05:00")
+startmax = (Time.now + config['daysInAdvance']*24*60*60).strftime("%Y-%m-%dT06:00:00-05:00")
 
 # Hash to store opening hours, by date, then library
 schedule = Hash.new do |hash, key|
@@ -86,15 +87,12 @@ config['libraries'].each do |library|
     exit 1
   end
   doc.root.each_element('//entry') do |entry|
-    STDERR.puts entry.to_s
     date = Time.parse(entry.elements['gd:when'].attributes['startTime']).strftime("%Y%m%d").to_s
-    puts entry.elements['gd:when'].attributes['startTime']
     open = prettytime(Time.parse(entry.elements['gd:when'].attributes['startTime']))
     close = prettytime(Time.parse(entry.elements['gd:when'].attributes['endTime']))
     hours = open + " - " + close
     hours = "closed" if entry.elements['title'].text =~ /closed/i
     schedule[date][library] = hours
-    STDERR.puts "    " + date + " " + hours
   end
 
 end
@@ -106,6 +104,8 @@ schedule.keys.sort {|a,b| a <=> b}.each do |day|
   # in a web page.
 
   STDERR.puts day if options[:verbose]
+  prettydate =  Date.parse(day).strftime("%A, %B %d %Y")
+
   dayhtml = ''
   dayhtml << config['template']
   begin
@@ -120,15 +120,17 @@ schedule.keys.sort {|a,b| a <=> b}.each do |day|
   config['libraries'].each do |library|
     if schedule[day][library].nil?
       STDERR.puts "No hours information for #{library} on #{day}!"
-      STDERR.puts "Regenerate hours before this becomes a problem"
-      # STDERR.puts "Please fix and rerun.  Aborting"
-      # exit
+      STDERR.puts "Please fix this before it becomes a problem."
+      #STDERR.puts "Please fix and rerun.  Aborting"
+      #exit
     end
     STDERR.puts "  " + library + ": " + schedule[day][library] if options[:verbose]
     # Replace ::LIBRARY:: in the template with some linked name and hours.
-    libraryLine = "<a href=\"#{config[library]['url']}\">#{config[library]['name']}</a>: #{schedule[day][library]}"
+    libraryLine = "<a title=\"#{config[library]['title']}\" href=\"#{config[library]['url']}\">#{config[library]['name']}</a>: #{schedule[day][library]}"
     dayhtml.gsub!(/::#{library.upcase}::/, libraryLine)
   end
+
+  dayhtml.gsub!(/::TODAY::/, prettydate)
 
   dayfile.write(dayhtml)
 

@@ -6,7 +6,7 @@
 # Change time zone as necessary.
 # When getting URLs by hand, append &orderby=starttime&sortorder=ascending
 # to make it more readable.
-googleUrl: http://www.google.com/calendar/feeds/::ID::@group.calendar.google.com/public/full?singleevents=true&ctz=America/Toronto&orderby=starttime&sortorder=ascending
+googleUrl: http://www.google.com/calendar/feeds/::ID::@group.calendar.google.com/public/full?singleevents=true&ctz=America/Toronto
 
 # Number of days of calendar information to grab at once.
 daysInAdvance: 10
@@ -16,79 +16,92 @@ defaultFile: today.html
 
 template: |
   <div id="hours">
-  <p>
+  Today is ::TODAY::.
+  <ul style="padding-left: 20px; list-style-type: circle;">
+  <li>
   ::SCOTT::
-  </p>
-  <p>
+  <ul style="padding-left: 15px; list-style-type: none;">
+  <li>
   ::ARCHIVES:: 
-  </p>
-  <p>
+  </li>
+  <li>
   ::SMIL::
-  </p>
-  <p>
+  </li>
+  <li>
   ::MAP::
-  </p>
-  <p>
+  </li>
+  </ul>
+  </li>
+  <li>
   ::BRONFMAN::
-  </p>
-  <p>
+  </li>
+  <li>
   ::FROST::
-  </p>
-  <p>
+  </li>
+  <li>
   ::LAW::
-  </p>
-  <p>
+  </li>
+  <li>
   ::STEACIE::
-  </p>
+  </li>
+  </ul>
   </div>
 
 libraries: # Each library must have a corresponding section below
 - archives
 - bronfman
-#- frost
-#- law
-#- map
-#- scott
-#- smil
-#- steacie
+- frost
+- law
+- map
+- scott
+- smil
+- steacie
 
 archives:
-  name: Clara Thomas Archives and Special Collections
+  name: Archives
+  title: The Clara Thomas Archives and Special Collections are on the third floor of Scott Library
   id: 85mt13bcn119dgs3svl0vp4l5c
   url: http://www.library.yorku.ca/ccm/ArchivesSpecialCollections/
-
+ 
 bronfman:
-  name: Bronfman Business Library
+  name: Bronfman
+  title: The Peter F. Bronfman Business Library is on the second floor of the Schulich School of Business
   id: m7c4318hko4aum2kmucq0g7kts
   url: http://www.library.yorku.ca/ccm/BG/
 
 frost:
-  name: Frost Library (Glendon)
+  name: Frost (Glendon)
+  title: The Leslie Frost Library is on the Glendon Campus
   id: m6imnub2uuugc472mgbjshe7dk
   url: http://www.library.yorku.ca/ccm/Frost/
 
 law:
-  name: Osgoode Law Library
+  name: Law
+  title: The Osgoode Law Library is in Osgoode Law School
   id: bi3cua07pdt6r9qt81r5nvtqs8
   url: http://library.osgoode.yorku.ca/
 
 map:
-  name: Map Library
+  name: Map
+  title: The Map Library is on the first floor of the Scott Library
   id: 1nrnldvrvqbvoq2ctgsjct9nn8
   url: http://www.library.yorku.ca/ccm/Map/
 
 scott:
-  name: Scott Library
+  name: Scott
+  title: The Scott Library entrance is on the south side of Central Square
   id: rcmuv3rj2tk8kjcaja59njl1gs
   url: http://www.library.yorku.ca/ccm/Home/About/scottlibrary.htm
 
 smil:
-  name: Sound and Moving Image Library
+  name: SMIL
+  title: The Sound and Moving Image Library is on the first floor of the Scott Library
   id: pri08tmnju1th02vv37qmrs8ic
   url: http://www.library.yorku.ca/ccm/SMIL/
 
 steacie:
-  name: Steacie Science and Engineering Library
+  name: Steacie
+  title: The Steacie Science and Engineering Library is on Campus Walk
   id: ss5b4rsslpjk0allmc0ej2b0no
   url: http://www.library.yorku.ca/ccm/Steacie/
 
