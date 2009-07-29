@@ -17,10 +17,10 @@ defaultFile: today.html
 template: |
   <div id="hours">
   Today is ::TODAY::.
-  <ul style="padding-left: 20px; list-style-type: circle;">
+  <ul style="branches">
   <li>
   ::SCOTT::
-  <ul style="padding-left: 15px; list-style-type: none;">
+  <ul style="scott">
   <li>
   ::ARCHIVES:: 
   </li>
