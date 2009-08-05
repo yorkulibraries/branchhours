@@ -59,7 +59,7 @@ libraries: # Each library must have a corresponding section below
 
 archives:
   name: Archives
-  title: The Clara Thomas Archives and Special Collections are on the third floor of Scott Library
+  title: The Clara Thomas Archives and Special Collections are on the third floor of the Scott Library
   id: 85mt13bcn119dgs3svl0vp4l5c
   url: /ccm/ArchivesSpecialCollections/
  
