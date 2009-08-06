@@ -104,7 +104,7 @@ schedule.keys.sort {|a,b| a <=> b}.each do |day|
   # in a web page.
 
   STDERR.puts day if options[:verbose]
-  prettydate =  Date.parse(day).strftime("%A, %B %d %Y")
+  prettydate =  Date.parse(day).strftime("%A, %B %e %Y")
 
   dayhtml = ''
   dayhtml << config['template']
