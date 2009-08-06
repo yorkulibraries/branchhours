@@ -64,7 +64,7 @@ archives:
   url: /ccm/ArchivesSpecialCollections/
  
 bronfman:
-  name: Bronfman
+  name: Bronfman (business)
   title: The Peter F. Bronfman Business Library is on the second floor of the Schulich School of Business
   id: m7c4318hko4aum2kmucq0g7kts
   url: /ccm/BG/
@@ -100,7 +100,7 @@ smil:
   url: /ccm/SMIL/
 
 steacie:
-  name: Steacie
+  name: Steacie (science)
   title: The Steacie Science and Engineering Library is on Campus Walk
   id: ss5b4rsslpjk0allmc0ej2b0no
   url: /ccm/Steacie/
