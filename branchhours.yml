@@ -45,6 +45,7 @@ template: |
   ::STEACIE::
   </li>
   </ul>
+  <p span class="more"><a href="/ccm/Home/About/">More</a></span>
   </div>
 
 libraries: # Each library must have a corresponding section below
