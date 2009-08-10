@@ -17,10 +17,10 @@ defaultFile: today.html
 template: |
   <div id="hours">
   Today is ::TODAY::.
-  <ul style="branches">
+  <ul class="branches">
   <li>
   ::SCOTT::
-  <ul style="scott">
+  <ul class="subbranch">
   <li>
   ::ARCHIVES:: 
   </li>
