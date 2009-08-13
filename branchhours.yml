@@ -30,6 +30,7 @@ template: |
   <li>
   ::MAP::
   </li>
+  <li> <a href="/ccm/Home/About/scott-services">services</a>: various </li>
   </ul>
   </li>
   <li>
@@ -45,6 +46,7 @@ template: |
   ::STEACIE::
   </li>
   </ul>
+  <li> <a href="/ccm/Home/About/">all libraries &amp; collections</a></li>
   </div>
 
 libraries: # Each library must have a corresponding section below
