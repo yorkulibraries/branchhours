@@ -24,6 +24,7 @@ template: |
   <li> ::ARCHIVES:: </li>
   <li> ::SMIL::: </li>
   <li> ::MAP:: </li>
+  <li> <a href="/ccm/Home/About/scott-services">Services</a>: various </li>
   </ul>
   </li>
   <li> ::BRONFMAN:: </li>
@@ -81,7 +82,7 @@ scott:
   url: /ccm/Home/About/scottlibrary.htm
 
 scott_study_space:
-  name: Scott study space
+  name: Study space
   title: Study space on the first floor of Scott is available 24/5 Sunday to Thursday.
   id: ji2t4bfef09mpufs7pj07cmuk4
   url: /ccm/FacilitiesAndEquipment/LateNightStudy
