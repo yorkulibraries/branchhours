@@ -92,7 +92,13 @@ config['libraries'].each do |library|
     close = prettytime(Time.parse(entry.elements['gd:when'].attributes['endTime']))
     hours = open + " - " + close
     hours = "closed" if entry.elements['title'].text =~ /closed/i
-    schedule[date][library] = hours
+    if library == 'scott_study_space'
+      # Special case.  For the Scott study space we
+      # always want to show the title of the all-day event.
+      schedule[date][library] = entry.elements['title'].text
+    else
+      schedule[date][library] = hours
+    end
   end
 
 end
@@ -104,7 +110,7 @@ schedule.keys.sort {|a,b| a <=> b}.each do |day|
   # in a web page.
 
   STDERR.puts day if options[:verbose]
-  prettydate =  Date.parse(day).strftime("%A, %B %e %Y")
+  prettydate =  Date.parse(day).strftime("%A, %B %e, %Y")
 
   dayhtml = ''
   dayhtml << config['template']
