@@ -22,7 +22,7 @@ template: |
   <ul class="subbranch">
   <li> ::SCOTT_STUDY_SPACE::</li>
   <li> ::ARCHIVES:: </li>
-  <li> ::SMIL::: </li>
+  <li> ::SMIL:: </li>
   <li> ::MAP:: </li>
   <li> <a href="/ccm/Home/About/scott-services">services</a>: various </li>
   </ul>
