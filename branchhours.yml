@@ -19,6 +19,8 @@ defaultFile: today.html
 #   <li> ::SCOTT_STUDY_SPACE::</li>
 
 template: |
+  <div id="box-libraries-and-collections">
+  HOURS &amp; LOCATIONS  <a class="smalltext" href="/ccm/Home/About/">detailed hours &gt;&gt;</a>
   <div id="hours">
   Today is ::TODAY::.
   <ul class="branches">
@@ -36,6 +38,7 @@ template: |
   <li> ::STEACIE:: </li>
   </ul>
   </div>
+  </div> <!-- box-libraries-and-collections -->
 
 libraries: # Each library must have a corresponding section below
 - archives
