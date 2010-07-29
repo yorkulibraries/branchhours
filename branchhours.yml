@@ -20,9 +20,10 @@ defaultFile: today.html
 
 template: |
   <div id="box-libraries-and-collections">
-  HOURS &amp; LOCATIONS  <a class="smalltext" href="/ccm/Home/About/">detailed hours &gt;&gt;</a>
+  HOURS &amp; LOCATIONS  <a style="font-size: smaller;" href="/ccm/Home/Hours/">detailed hours &gt;&gt;</a>
+
   <div id="hours">
-  Today is ::TODAY::.
+  <p>Today is ::TODAY::.</p>
   <ul class="branches">
   <li> ::SCOTT::
   <ul class="subbranch">
