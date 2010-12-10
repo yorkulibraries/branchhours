@@ -24,7 +24,7 @@ OptionParser.new do |opts|
   end
   opts.on("-d", "--date date", "default day (today, tomorrow, YYYYMMDD)") do |date|
     options[:date] = date
-  end		     
+  end
   opts.on("-v", "--verbose",  "be verbose") { options[:verbose] = true }
 end.parse!
 
@@ -39,19 +39,23 @@ if options[:date] =~ /today/i
   yyyymmdd = Time.now.strftime("%Y%m%d")
 elsif options[:date] =~ /tomorrow/i
   yyyymmdd = (Time.now + 24*60*60).strftime("%Y%m%d")
-else 
+else
   yyyymmdd = options[:date]
 end
 
 defaultFilePath = config['outputDir'] + "/" + config['defaultFile']
 targetFilePath  = config['outputDir'] + "/" + yyyymmdd + ".html"
+mdefaultFilePath = config['outputDir'] + "/m-" + config['defaultFile']
+mtargetFilePath  = config['outputDir'] + "/m-" + yyyymmdd + ".html"
 
 STDERR.puts "#{defaultFilePath} -> #{targetFilePath}" if options[:verbose]
 
-# Finally, make the symlink so we can always 
+# Finally, make the symlink so we can always
 begin
   File.delete(defaultFilePath) if File.exist?(defaultFilePath)
-  File.symlink(targetFilePath, defaultFilePath) 
+  File.symlink(targetFilePath, defaultFilePath)
+  File.delete(mdefaultFilePath) if File.exist?(mdefaultFilePath)
+  File.symlink(mtargetFilePath, mdefaultFilePath)
 rescue Exception => e
   STDERR.puts "Could not create symlink to today's hours: #{e}"
   STDERR.puts "Hours information may be incorrect on your web site"

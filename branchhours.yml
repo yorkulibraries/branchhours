@@ -40,14 +40,10 @@ template: |
 mtemplate: |
   <p> Today is ::TODAY::. </p>
   <ul>
-  <li> ::SCOTT::
-  <ul class="subbranch">
+  <li> ::SCOTT:: </li>
   <li> ::ARCHIVES:: </li>
   <li> ::SMIL:: </li>
   <li> ::MAP:: </li>
-  <li> services: various </li>
-  </ul>
-  </li>
   <li> ::BRONFMAN:: </li>
   <li> ::FROST:: </li>
   <li> ::LAW:: </li>
@@ -100,7 +96,7 @@ scott:
   name: Scott
   title: The Scott Library entrance is on the south side of Central Square
   id: rcmuv3rj2tk8kjcaja59njl1gs
-  url: /ccm/Home/About/scottlibrary.htm
+  url: /ccm/Home/About/scottlibrary
 
 scott_study_space:
   name: study space
