@@ -33,7 +33,7 @@ rescue Exception => e
   exit 1
 end
 
-def prettytime (time) 
+def prettytime (time)
   # '9 am' and 'noon' are better than '09:00 AM' and '12:00 PM'
   nice = time.strftime('%I')
   nice = nice.slice(1,2) if (nice.to_i < 10)
@@ -114,6 +114,10 @@ schedule.keys.sort {|a,b| a <=> b}.each do |day|
 
   dayhtml = ''
   dayhtml << config['template']
+  mdayhtml = ''
+  mdayhtml << config['mtemplate']
+
+  # Needless duplication, but it works
   begin
     dayfile = File.new("#{config['outputDir']}/#{day}.html", "w")
     dayfile.chmod(0664)
@@ -122,23 +126,36 @@ schedule.keys.sort {|a,b| a <=> b}.each do |day|
     STDERR.puts e
     exit 1
   end
+  begin
+    mdayfile = File.new("#{config['outputDir']}/m-#{day}.html", "w")
+    mdayfile.chmod(0664)
+  rescue Exception => e
+    STDERR.puts "Problem creating #{config['outputDir']}/m-#{day}.html. Aborting"
+    STDERR.puts e
+    exit 1
+  end
 
   config['libraries'].each do |library|
     if schedule[day][library].nil?
       # If a branch has no information for a day, show a blank.
       # That at least shows something is missing without alarming people.
-      STDERR.puts "  " + library + ": no information. Update your calendar." 
-      schedule[day][library] = '' 
+      STDERR.puts "  " + library + ": no information. Update your calendar."
+      schedule[day][library] = ''
     end
     STDERR.puts "  " + library + ": " + schedule[day][library] if options[:verbose]
+
     # Replace ::LIBRARY:: in the template with some linked name and hours.
     libraryLine = "<a title=\"#{config[library]['title']}\" href=\"#{config[library]['url']}\">#{config[library]['name']}</a>: #{schedule[day][library]}"
     dayhtml.gsub!(/::#{library.upcase}::/, libraryLine)
+    mlibraryLine = "#{config[library]['name']}: #{schedule[day][library]}"
+    mdayhtml.gsub!(/::#{library.upcase}::/, mlibraryLine)
   end
 
   dayhtml.gsub!(/::TODAY::/, prettydate)
-
   dayfile.write(dayhtml)
+
+  mdayhtml.gsub!(/::TODAY::/, prettydate)
+  mdayfile.write(mdayhtml)
 
 end
 

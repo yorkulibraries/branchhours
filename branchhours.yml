@@ -37,6 +37,24 @@ template: |
   </ul>
   </div>
 
+mtemplate: |
+  <p> Today is ::TODAY::. </p>
+  <ul>
+  <li> ::SCOTT::
+  <ul class="subbranch">
+  <li> ::ARCHIVES:: </li>
+  <li> ::SMIL:: </li>
+  <li> ::MAP:: </li>
+  <li> services: various </li>
+  </ul>
+  </li>
+  <li> ::BRONFMAN:: </li>
+  <li> ::FROST:: </li>
+  <li> ::LAW:: </li>
+  <li> ::STEACIE:: </li>
+  </ul>
+  </div>
+
 libraries: # Each library must have a corresponding section below
 - archives
 - bronfman
@@ -53,7 +71,7 @@ archives:
   title: The Clara Thomas Archives and Special Collections are on the third floor of the Scott Library
   id: 85mt13bcn119dgs3svl0vp4l5c
   url: /ccm/ArchivesSpecialCollections/
- 
+
 bronfman:
   name: Bronfman (business)
   title: The Peter F. Bronfman Business Library is on the second floor of the Schulich School of Business
