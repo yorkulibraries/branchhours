@@ -48,6 +48,7 @@ mtemplate: |
   <head>
   <title>YUL: Hours</title>
   <link rel="stylesheet" href="http://code.jquery.com/mobile/1.0a2/jquery.mobile-1.0a2.min.css" />
+  <link rel="stylesheet" href="/m.css" />
   <script src="http://code.jquery.com/jquery-1.4.3.min.js"></script>
   <script src="http://code.jquery.com/mobile/1.0a2/jquery.mobile-1.0a2.min.js"></script>
   </head>
