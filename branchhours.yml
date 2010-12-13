@@ -78,21 +78,12 @@ mtemplate: |
   </div><!-- /content -->
 
   <div data-role="footer">
-  <h4><img src="http://www.yorku.ca/yorkweb/standards/images/yorklogo.gif" /></h4>
   </div><!-- /header -->
 
   </div><!-- /page -->
 
   </body>
   </html>
-
-
-
-
-
-
-
-
 
 libraries: # Each library must have a corresponding section below
 - archives
