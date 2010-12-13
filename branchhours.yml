@@ -7,6 +7,7 @@
 # When getting URLs by hand, append &orderby=starttime&sortorder=ascending
 # to make it more readable.
 googleUrl: http://www.google.com/calendar/feeds/::ID::@group.calendar.google.com/public/full?singleevents=true&ctz=America/Toronto
+googleAgendaUrl: https://www.google.com/calendar/embed?src=::ID::@group.calendar.google.com&ctz=America/Toronto&mode=AGENDA
 
 # Number of days of calendar information to grab at once.
 daysInAdvance: 10

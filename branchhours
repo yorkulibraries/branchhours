@@ -147,7 +147,8 @@ schedule.keys.sort {|a,b| a <=> b}.each do |day|
     # Replace ::LIBRARY:: in the template with some linked name and hours.
     libraryLine = "<a title=\"#{config[library]['title']}\" href=\"#{config[library]['url']}\">#{config[library]['name']}</a>: #{schedule[day][library]}"
     dayhtml.gsub!(/::#{library.upcase}::/, libraryLine)
-    mlibraryLine = "#{config[library]['name']}: #{schedule[day][library]}"
+    agendaUrl = config['googleAgendaUrl'].gsub(/::ID::/, config[library]['id']) + "&amp;ctz=America/Toronto&amp;mode=AGENDA"
+    mlibraryLine = "<a href=\"#{agendaUrl}\">#{config[library]['name']}: #{schedule[day][library]}</a>"
     mdayhtml.gsub!(/::#{library.upcase}::/, mlibraryLine)
   end
 
