@@ -17,6 +17,7 @@ defaultFile: today.html
 
 # When the Scott study space is open, this should be first in the Scott
 # subbranch:
+#   <li> ::SCOTT_STUDY_SPACE::</li>
 
 template: |
   <div id="box-libraries-and-collections">
@@ -27,7 +28,6 @@ template: |
   <ul class="branches">
   <li> ::SCOTT::
   <ul class="subbranch">
-  <li> ::SCOTT_STUDY_SPACE::</li>
   <li> ::ARCHIVES:: </li>
   <li> ::SMIL:: </li>
   <li> ::MAP:: </li>
