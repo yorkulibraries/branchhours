@@ -148,7 +148,8 @@ schedule.keys.sort {|a,b| a <=> b}.each do |day|
     libraryLine = "<a title=\"#{config[library]['title']}\" href=\"#{config[library]['url']}\">#{config[library]['name']}</a>: #{schedule[day][library]}"
     dayhtml.gsub!(/::#{library.upcase}::/, libraryLine)
     agendaUrl = config['googleAgendaUrl'].gsub(/::ID::/, config[library]['id']) + "&amp;ctz=America/Toronto&amp;mode=AGENDA"
-    mlibraryLine = "<a href=\"#{agendaUrl}\">#{config[library]['name']}: #{schedule[day][library]}</a>"
+    # mlibraryLine = "<a href=\"#{agendaUrl}\">#{config[library]['name']}: #{schedule[day][library]}</a>"
+    mlibraryLine = "#{config[library]['name']}: #{schedule[day][library]}"
     mdayhtml.gsub!(/::#{library.upcase}::/, mlibraryLine)
   end
 
