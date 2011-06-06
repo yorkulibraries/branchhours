@@ -46,7 +46,7 @@ mtemplate: |
 
   <p> Today is ::TODAY::. </p>
 
-  <ul data-role="listview" data-inset="true" data-theme="c" data-dividertheme="b">
+  <ul data-role="listview" data-inset="true">
   <li> ::SCOTT:: </li>
   <li> ::ARCHIVES:: </li>
   <li> ::SMIL:: </li>
