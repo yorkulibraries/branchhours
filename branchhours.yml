@@ -47,14 +47,14 @@ mtemplate: |
   <p> Today is ::TODAY::. </p>
 
   <ul data-role="listview" data-inset="true">
-  <li> ::SCOTT:: </li>
-  <li> ::ARCHIVES:: </li>
-  <li> ::SMIL:: </li>
-  <li> ::MAP:: </li>
-  <li> ::BRONFMAN:: </li>
-  <li> ::FROST:: </li>
-  <li> ::LAW:: </li>
-  <li> ::STEACIE:: </li>
+  <li> <a href="scott.html">::SCOTT::</a></li>
+  <li> <a href="archives.html">::ARCHIVES::</a></li>
+  <li> <a href="smil.html">::SMIL::</a></li>
+  <li> <a href="map.html">::MAP::</a></li>
+  <li> <a href="bronfman.html">::BRONFMAN::</a></li>
+  <li> <a href="frost.html">::FROST::</a></li>
+  <li> <a href="osgoode.html">::LAW::</a></li>
+  <li> <a href="steacie.html">::STEACIE::</a></li>
   </ul>
 
 libraries: # Each library must have a corresponding section below
