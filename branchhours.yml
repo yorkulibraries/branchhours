@@ -70,54 +70,63 @@ libraries: # Each library must have a corresponding section below
 
 archives:
   name: Archives
+  mname: Archives
   title: The Clara Thomas Archives and Special Collections are on the third floor of the Scott Library
   id: 85mt13bcn119dgs3svl0vp4l5c
   url: /ccm/ArchivesSpecialCollections/
 
 bronfman:
   name: Bronfman (business)
+  mname: Bronfman
   title: The Peter F. Bronfman Business Library is on the second floor of the Schulich School of Business
   id: m7c4318hko4aum2kmucq0g7kts
   url: /ccm/BG/
 
 frost:
   name: Frost (Glendon)
+  mname: Frost
   title: The Leslie Frost Library is on the Glendon Campus
   id: m6imnub2uuugc472mgbjshe7dk
   url: /ccm/Frost/
 
 law:
   name: Osgoode (law)
+  mnane: Osgoode
   title: The Osgoode Law Library is in Osgoode Law School
   id: bi3cua07pdt6r9qt81r5nvtqs8
   url: http://library.osgoode.yorku.ca/
 
 map:
   name: Map
+  mname: Map
   title: The Map Library is on the first floor of the Scott Library
   id: 1nrnldvrvqbvoq2ctgsjct9nn8
   url: /ccm/Map/
 
 scott:
   name: Scott
+  mname: Scott
   title: The Scott Library entrance is on the south side of Central Square
   id: rcmuv3rj2tk8kjcaja59njl1gs
   url: /ccm/Home/About/scottlibrary
 
 scott_study_space:
   name: study space
+  mname: study space
   title: Study space on the first floor of Scott is available 24/5 Sunday to Thursday.
   id: ji2t4bfef09mpufs7pj07cmuk4
   url: /ccm/FacilitiesAndEquipment/LateNightStudy
 
 smil:
   name: SMIL
+  mname: SMIL
   title: The Sound and Moving Image Library is on the first floor of the Scott Library
   id: pri08tmnju1th02vv37qmrs8ic
   url: /ccm/SMIL/
 
 steacie:
   name: Steacie (science)
+  mname: Steacie
   title: The Steacie Science and Engineering Library is on Campus Walk
   id: ss5b4rsslpjk0allmc0ej2b0no
   url: /ccm/Steacie/
