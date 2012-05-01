@@ -28,10 +28,13 @@ template: |
   <ul class="branches">
   <li> ::SCOTT::
   <ul class="subbranch">
+  <li> ::SCOTT_RESEARCH:: </li>
   <li> ::ARCHIVES:: </li>
   <li> ::SMIL:: </li>
   <li> ::MAP:: </li>
-  <li> <a href="/ccm/Home/About/scott-services">services</a>: various </li>
+  <li> ::ACCESSIBILITY_SERVICES:: </li>
+  <li> ::RESOURCE_SHARING:: </li>
+  <!-- li> <a href="/ccm/Home/About/scott-services">services</a>: various </li -->
   </ul>
   </li>
   <li> ::BRONFMAN:: </li>
@@ -58,15 +61,25 @@ mtemplate: |
   </ul>
 
 libraries: # Each library must have a corresponding section below
+- accessibility_services
 - archives
 - bronfman
 - frost
 - law
 - map
+- resource_sharing
 - scott
+- scott_research
 - scott_study_space
 - smil
 - steacie
+
+accessibility_services:
+  name: Accessibility Services
+  mname: Accessibility Services
+  title: Provides equitable access to library services, resources and facilities
+  id: rkvougjo9eavu6tommdme6tapk
+  url: /cms/accessibilityservices/
 
 archives:
   name: Archives
@@ -103,12 +116,26 @@ map:
   id: 1nrnldvrvqbvoq2ctgsjct9nn8
   url: /cms/map/
 
+resource_sharing:
+  name: Resource Sharing
+  mname: Resource Sharing
+  title: Interlibrary loans
+  id: 93f029ee1njfl6mqf24odpje50
+  url: /cms/resourcesharing/
+
 scott:
   name: Scott
   mname: Scott
   title: The Scott Library entrance is on the south side of Central Square
   id: rcmuv3rj2tk8kjcaja59njl1gs
   url: /cms/library-departments/scottlibrary/
+
+scott_research:
+  name: research help
+  mname: research help
+  title: Research help is available from librarians
+  id: 1n3cglg65abupr5vnnvc7g44dk
+  url: /cms/scottreference/
 
 scott_study_space:
   name: study space
