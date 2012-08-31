@@ -19,6 +19,10 @@ defaultFile: today.html
 # subbranch:
 #  <li> ::SCOTT_STUDY_SPACE::</li>
 
+# When these are ready to go, put in:
+#  <li> ::ACCESSIBILITY_SERVICES:: </li>
+#  <li> ::RESOURCE_SHARING:: </li>
+
 template: |
   <div id="box-libraries-and-collections">
   HOURS &amp; LOCATIONS  <a style="font-size: smaller;" href="/ccm/Home/Hours/">detailed hours &gt;&gt;</a>
@@ -32,8 +36,6 @@ template: |
   <li> ::ARCHIVES:: </li>
   <li> ::SMIL:: </li>
   <li> ::MAP:: </li>
-  <li> ::ACCESSIBILITY_SERVICES:: </li>
-  <li> ::RESOURCE_SHARING:: </li>
   <!-- li> <a href="/ccm/Home/About/scott-services">services</a>: various </li -->
   </ul>
   </li>
