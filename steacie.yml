@@ -1,0 +1,120 @@
+# Config file for YUL calendars on Google.
+
+---
+
+# Google URL information. start-min and start-max will be appended.
+# Change time zone as necessary.
+# When getting URLs by hand, append &orderby=starttime&sortorder=ascending
+# to make it more readable.
+googleUrl: http://www.google.com/calendar/feeds/::ID::@group.calendar.google.com/public/full?singleevents=true&ctz=America/Toronto
+googleAgendaUrl: https://www.google.com/calendar/embed?src=::ID::@group.calendar.google.com&ctz=America/Toronto&mode=AGENDA
+
+# Number of days of calendar information to grab at once.
+daysInAdvance: 10
+
+# outputDir: /var/www/hours
+outputDir: /var/www/hours/steacie
+defaultFile: today.html
+
+# When the Scott study space is open, this should be first in the Scott
+# subbranch:
+#  <li> ::SCOTT_STUDY_SPACE::</li>
+  
+template: |
+  <li> <span class='day'>::DAY::</span><span class='hours'>::HOURS::</span> </li>
+mtemplate: |
+
+  <p> Today is ::TODAY::. </p>
+
+  <ul data-role="listview" data-inset="true">
+  <li> <a href="steacie.html">::STEACIE::</a></li>
+  </ul>
+
+libraries: # Each library must have a corresponding section below
+- steacie
+
+accessibility_services:
+  name: Accessibility Services
+  mname: Accessibility Services
+  title: Provides equitable access to library services, resources and facilities
+  id: rkvougjo9eavu6tommdme6tapk
+  url: /cms/accessibilityservices/
+
+archives:
+  name: Clara Thomas Archives & Sp. Collection
+  mname: Archives
+  title: The Clara Thomas Archives and Special Collections are on the third floor of the Scott Library
+  id: 85mt13bcn119dgs3svl0vp4l5c
+  url: /cms/archivesspecialcollections/
+
+bronfman:
+  name: Bronfman (Business)
+  mname: Bronfman
+  title: The Peter F. Bronfman Business Library is on the second floor of the Schulich School of Business
+  id: m7c4318hko4aum2kmucq0g7kts
+  url: /cms/bbl/
+
+frost:
+  name: Frost (Glendon)
+  mname: Frost
+  title: The Leslie Frost Library is on the Glendon Campus
+  id: m6imnub2uuugc472mgbjshe7dk
+  url: /cms/frost/
+
+law:
+  name: Osgoode Law
+  mname: Osgoode
+  title: The Osgoode Law Library is in Osgoode Law School
+  id: bi3cua07pdt6r9qt81r5nvtqs8
+  url: http://www.osgoode.yorku.ca/library/
+
+map:
+  name: Map Library
+  mname: Map
+  title: The Map Library is on the first floor of the Scott Library
+  id: 1nrnldvrvqbvoq2ctgsjct9nn8
+  url: /cms/map/
+
+resource_sharing:
+  name: Resource Sharing
+  mname: Resource Sharing
+  title: Interlibrary loans
+  id: 93f029ee1njfl6mqf24odpje50
+  url: /cms/resourcesharing/
+
+scott:
+  name: Scott Library
+  mname: Scott
+  title: The Scott Library entrance is on the south side of Central Square
+  id: rcmuv3rj2tk8kjcaja59njl1gs
+  url: /cms/library-departments/scottlibrary/
+
+scott_research:
+  name: research help
+  mname: research help
+  title: Research help is available from librarians
+  id: 1n3cglg65abupr5vnnvc7g44dk
+  url: /cms/scottreference/
+
+scott_study_space:
+  name: study space
+  mname: study space
+  title: Study space on the first floor of Scott is available 24/5 Sunday to Thursday.
+  id: ji2t4bfef09mpufs7pj07cmuk4
+  url: /ccm/FacilitiesAndEquipment/LateNightStudy
+
+smil:
+  name: SMIL Library
+  mname: SMIL
+  title: The Sound and Moving Image Library is on the first floor of the Scott Library
+  id: pri08tmnju1th02vv37qmrs8ic
+  url: /cms/smil/
+
+steacie:
+  name: Steacie Sci. & Eng.Library
+  mname: Steacie
+  title: The Steacie Science and Engineering Library is on Campus Walk
+  id: ss5b4rsslpjk0allmc0ej2b0no
+  url: /cms/steacie/
+
+
