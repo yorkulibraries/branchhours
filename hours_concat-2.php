@@ -35,7 +35,7 @@ for ($i=0; $i < 7; $i++) {
    $next_day = 60*60*24 * $i;
    $date = date("Ymd", $monday_time + $next_day);
    $file = $input_directory . "/" . $date . ".html"; //e.g. 20130806.html
-
+ 
    if (!file_exists($file)) {
       $convert_to_time = strtotime($date);
       $name_of_day = date("D", $convert_to_time);
