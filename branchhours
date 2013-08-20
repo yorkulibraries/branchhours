@@ -47,7 +47,7 @@ end
 # Get ready to give Google the start and end times for the daysInAdvance
 # range of days.
 # You may need to change the time zone.
-startmin = Time.now.strftime("%Y-%m-%dT06:00:00-05:00")
+startmin = (Time.now - config['daysInAdvance']*24*60*60).strftime("%Y-%m-%dT06:00:00-05:00")
 startmax = (Time.now + config['daysInAdvance']*24*60*60).strftime("%Y-%m-%dT06:00:00-05:00")
 
 # Hash to store opening hours, by date, then library
@@ -159,6 +159,54 @@ schedule.keys.sort {|a,b| a <=> b}.each do |day|
   mdayhtml.gsub!(/::TODAY::/, prettydate)
   mdayfile.write(mdayhtml)
 
+end
+
+##
+# Create the weekly hours file for each library
+#
+##
+
+config['libraries'].each do |library|
+  begin
+    weekfile = File.new("#{config['weeklyDir']}/#{library}_hours.html", "w")
+    weekfile.chmod(0664)
+  rescue Exception => e
+    STDERR.puts "Problem creating #{config['weeklyDir']}/#{library}_hours.html. Aborting"
+    STDERR.puts e
+    exit 1
+  end
+
+  STDERR.puts library.upcase if options[:verbose]
+  
+  weekhtml = ''
+  weekhtml << config['weektemplate']
+
+  # Determine Monday
+  now = Date.today
+  sunday = now - now.wday
+  monday = now - now.wday + 1
+  
+  for i in 1..7
+    day_to_get = now - now.wday + i
+    day_hours = schedule[day_to_get.strftime('%Y%m%d')][library]
+
+    if (day_hours || day_hours == '')  
+      weekline = "<span class='day'>#{day_to_get.strftime('%A')}</span><span class=hours>#{day_hours.upcase}</span>"
+      weekhtml.gsub!(/::#{day_to_get.strftime('%A').upcase}::/, weekline)
+      STDERR.puts day_to_get.strftime('%A') + " " + day_hours if options[:verbose]
+    else 
+      weekline = "<span class='day'>#{day_to_get.strftime('%A')}</span><span class=hours>Unavailable</span>"
+      weekhtml.gsub!(/::#{day_to_get.strftime('%A').upcase}::/, weekline)
+      STDERR.puts day_to_get.strftime('%A') + " " + 'Unavailable' if options[:verbose]
+    end
+
+  end
+
+  STDERR.puts weekhtml if options[:verbose]
+
+  weekfile.write(weekhtml)
+
+  STDERR.puts '=============================' if options[:verbose]
 end
 
 

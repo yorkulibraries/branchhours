@@ -13,6 +13,7 @@ googleAgendaUrl: https://www.google.com/calendar/embed?src=::ID::@group.calendar
 daysInAdvance: 10
 
 outputDir: /var/www/hours
+weeklyDir: /var/www/hours
 defaultFile: today.html
 
 # When the Scott study space is open, this should be first in the Scott
@@ -58,6 +59,19 @@ mtemplate: |
   <li> <a href="osgoode.html">::LAW::</a></li>
   <li> <a href="steacie.html">::STEACIE::</a></li>
   </ul>
+  
+weektemplate: |
+      <h3><i class='icon-time'></i> Hours of Operation</h3>
+      <ul>
+      <li> ::MONDAY:: </li>
+      <li> ::TUESDAY:: </li>
+      <li> ::WEDNESDAY:: </li>
+      <li> ::THURSDAY:: </li>
+      <li> ::FRIDAY:: </li>
+      <li> ::SATURDAY:: </li>
+      <li> ::SUNDAY:: </li>            
+      </ul>
+
 
 libraries: # Each library must have a corresponding section below
 - accessibility_services
