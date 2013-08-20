@@ -145,7 +145,7 @@ schedule.keys.sort {|a,b| a <=> b}.each do |day|
     STDERR.puts "  " + library + ": " + schedule[day][library] if options[:verbose]
 
     # Replace ::LIBRARY:: in the template with some linked name and hours.
-    libraryLine = "<a class=\"library-branch\" title=\"#{config[library]['title']}\" href=\"#{config[library]['url']}\">#{config[library]['name']}</a> <span class=\"hours\">#{schedule[day][library]}</span>"
+    libraryLine = "<a class=\"library-branch\" title=\"#{config[library]['title']}\" href=\"#{config[library]['url']}\">#{config[library]['name']}</a> <span class=\"hours\">#{schedule[day][library].upcase}</span>"
     dayhtml.gsub!(/::#{library.upcase}::/, libraryLine)
     agendaUrl = config['googleAgendaUrl'].gsub(/::ID::/, config[library]['id']) + "&amp;ctz=America/Toronto&amp;mode=AGENDA"
     # mlibraryLine = "<a href=\"#{agendaUrl}\">#{config[library]['name']}: #{schedule[day][library]}</a>"
