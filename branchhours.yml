@@ -62,7 +62,6 @@ mtemplate: |
   </ul>
   
 weektemplate: |
-      <h3><i class='icon-time'></i> Hours of Operation</h3>
       <ul>
       <li> ::MONDAY:: </li>
       <li> ::TUESDAY:: </li>
