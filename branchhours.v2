@@ -115,8 +115,8 @@ schedule.keys.sort {|a,b| a <=> b}.each do |day|
 
   dayhtml = ''
   dayhtml << config['template']
-  # mdayhtml = ''
-  # mdayhtml << config['mtemplate']
+  mdayhtml = ''
+  mdayhtml << config['mtemplate']
 
   # Needless duplication, but it works
   begin
@@ -127,14 +127,14 @@ schedule.keys.sort {|a,b| a <=> b}.each do |day|
     STDERR.puts e
     exit 1
   end
-  # begin
-  #   mdayfile = File.new("#{config['outputDir']}/m-#{day}.html", "w")
-  #   mdayfile.chmod(0664)
-  # rescue Exception => e
-  #   STDERR.puts "Problem creating #{config['outputDir']}/m-#{day}.html. Aborting"
-  #   STDERR.puts e
-  #   exit 1
-  # end
+  begin
+    mdayfile = File.new("#{config['outputDir']}/m-#{day}.html", "w")
+    mdayfile.chmod(0664)
+  rescue Exception => e
+    STDERR.puts "Problem creating #{config['outputDir']}/m-#{day}.html. Aborting"
+    STDERR.puts e
+    exit 1
+  end
 
   config['libraries'].each do |library|
     if schedule[day][library].nil?
@@ -146,28 +146,58 @@ schedule.keys.sort {|a,b| a <=> b}.each do |day|
     STDERR.puts "  " + library + ": " + schedule[day][library] if options[:verbose]
 
     # Replace ::LIBRARY:: in the template with some linked name and hours.
-    libraryLine = "<a class='library-branch' title=\"#{config[library]['title']}\" href=\"#{config[library]['url']}\">#{config[library]['name']}</a> <span class='hours'>#{schedule[day][library]}</span>"
+    libraryLine = "<a title=\"#{config[library]['title']}\" href=\"#{config[library]['url']}\">#{config[library]['name']}</a>: #{schedule[day][library]}"
     dayhtml.gsub!(/::#{library.upcase}::/, libraryLine)
-
-    week_day = Date.parse(day).strftime("%A");
-    dayhtml.gsub!(/::DAY::/, week_day)
-    
-    hours = schedule[day][library]
-    dayhtml.gsub!(/::HOURS::/, hours)
-    
-
     agendaUrl = config['googleAgendaUrl'].gsub(/::ID::/, config[library]['id']) + "&amp;ctz=America/Toronto&amp;mode=AGENDA"
     # mlibraryLine = "<a href=\"#{agendaUrl}\">#{config[library]['name']}: #{schedule[day][library]}</a>"
-    # mlibraryLine = "#{config[library]['mname']}: #{schedule[day][library]}"
-    # mdayhtml.gsub!(/::#{library.upcase}::/, mlibraryLine)
+    mlibraryLine = "#{config[library]['mname']}: #{schedule[day][library]}"
+    mdayhtml.gsub!(/::#{library.upcase}::/, mlibraryLine)
   end
 
   dayhtml.gsub!(/::TODAY::/, prettydate)
   dayfile.write(dayhtml)
 
-  # mdayhtml.gsub!(/::TODAY::/, prettydate)
-  # mdayfile.write(mdayhtml)
+  mdayhtml.gsub!(/::TODAY::/, prettydate)
+  mdayfile.write(mdayhtml)
 
 end
 
+##
+# Creates the weekly hours file for each library
+#
+##
 
+config['libraries'].each do |library|
+  begin
+    weekfile = File.new("#{config['weeklyDir']}/#{library}_hours.html", "w")
+    weekfile.chmod(0664)
+  rescue Exception => e
+    STDERR.puts "Problem creating #{config['weeklyDir']}/#{library}_hours.html. Aborting"
+    STDERR.puts e
+    exit 1
+  end
+
+  STDERR.puts library.upcase if options[:verbose]
+  
+  weekhtml = ''
+  weekhtml << config['weektemplate']
+  
+  for i in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+    day_hours = ''
+    day_hours = schedule[Date.parse("#{i}").strftime("%Y%m%d")][library]
+    if (day_hours || day_hours == '')  
+      weekline = "<span class='day'>#{i}</span><span class=hours>#{day_hours}</span>"
+      weekhtml.gsub!(/::#{i.upcase}::/, weekline)
+      STDERR.puts i + " " + day_hours if options[:verbose]
+    else 
+      # puts "ELSE"
+      # puts day_hours
+      weekline = "<span class='day'>#{i}</span><span class=hours>Unavailable</span>"
+      weekhtml.gsub!(/::#{i.upcase}::/, weekline)
+      STDERR.puts i + " " + 'Unavailable' if options[:verbose]
+    end
+  end
+  STDERR.puts weekhtml if options[:verbose]
+  weekfile.write(weekhtml)
+  STDERR.puts '=============================' if options[:verbose]
+end
