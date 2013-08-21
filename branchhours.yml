@@ -90,21 +90,21 @@ archives:
   url: /cms/archivesspecialcollections/
 
 bronfman:
-  name: Bronfman (Business)
+  name: Bronfman Business Library
   mname: Bronfman
   title: The Peter F. Bronfman Business Library is on the second floor of the Schulich School of Business
   id: m7c4318hko4aum2kmucq0g7kts
   url: /cms/bbl/
 
 frost:
-  name: Frost (Glendon)
+  name: Frost Library (Glendon)
   mname: Frost
   title: The Leslie Frost Library is on the Glendon Campus
   id: m6imnub2uuugc472mgbjshe7dk
   url: /cms/frost/
 
 law:
-  name: Osgoode (law)
+  name: Osgoode Law Library
   mname: Osgoode
   title: The Osgoode Law Library is in Osgoode Law School
   id: bi3cua07pdt6r9qt81r5nvtqs8
@@ -146,14 +146,14 @@ scott_study_space:
   url: /cms/facilitiesandequipment/latenightstudy/
 
 smil:
-  name: Sound and Monving Image Library (SMIL)
+  name: Sound and Moving Image Library (SMIL)
   mname: SMIL
   title: The Sound and Moving Image Library is on the first floor of the Scott Library
   id: pri08tmnju1th02vv37qmrs8ic
   url: /cms/smil/
 
 steacie:
-  name: Steacie Science and Engineering Library
+  name: Steacie Science & Engineering Library
   mname: Steacie
   title: The Steacie Science and Engineering Library is on Campus Walk
   id: ss5b4rsslpjk0allmc0ej2b0no
