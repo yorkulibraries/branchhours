@@ -193,6 +193,7 @@ config['libraries'].each do |library|
       weekhtml.gsub!(/Friday/, 'VENDREDI')
       weekhtml.gsub!(/Saturday/, 'SAMEDI')
       weekhtml.gsub!(/Sunday/, 'DIMANCHE')
+      weekhtml.gsub!(/closed/, 'FERME')
       STDERR.puts day_to_get.strftime('%A') + " " + day_hours if options[:verbose]
     end
 
