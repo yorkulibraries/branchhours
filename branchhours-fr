@@ -1,0 +1,213 @@
+#!/usr/bin/ruby -w
+
+# branchhours
+#
+# Show today's branch opening hours, taken from Google Calendars
+#
+# William Denton <wdenton@yorku.ca>
+# http://github.com/wdenton/branchhours/
+
+require 'net/http'
+require 'optparse'
+require 'rexml/document'
+require 'date'
+require 'time'
+require 'yaml'
+
+options = {}
+options[:verbose] = false
+options[:config]  = 'branchhours.yml'
+
+OptionParser.new do |opts|
+  opts.banner = "Usage: branchhours [options]"
+  opts.on("-c", "--config configFile", "specify configuration file") do |configFile|
+    options[:config] = configFile
+  end
+  opts.on("-v", "--verbose",  "be verbose") { options[:verbose] = true }
+end.parse!
+
+begin
+  config = YAML.load_file(options[:config])
+rescue Exception => e
+  puts e
+  exit 1
+end
+
+def prettytime (time)
+  # '9 am' and 'noon' are better than '09:00 AM' and '12:00 PM'
+  nice = time.strftime('%I')
+  nice = nice.slice(1,2) if (nice.to_i < 10)
+  nice = nice + ":" + time.strftime('%M') unless (time.strftime('%M').to_i == 0)
+  nice = nice + " " + time.strftime('%p')
+  nice.downcase!
+  nice = "noon" if nice == '12 PM'
+  return nice
+end
+
+# Get ready to give Google the start and end times for the daysInAdvance
+# range of days.
+# You may need to change the time zone.
+startmin = (Time.now - config['daysInAdvance']*24*60*60).strftime("%Y-%m-%dT06:00:00-05:00")
+startmax = (Time.now + config['daysInAdvance']*24*60*60).strftime("%Y-%m-%dT06:00:00-05:00")
+
+# Hash to store opening hours, by date, then library
+schedule = Hash.new do |hash, key|
+  # Ruby doesn't create a hash of hashes on the fly like Perl, so
+  # I'm using this from http://www.ruby-forum.com/topic/140570
+  hash[key] = {}
+end
+
+STDERR.puts "Getting calendars from Google ..."  if options[:verbose]
+config['libraries'].each do |library|
+  # The schedule hash will have YYYYMMDD dates as keys, and the
+  # values will be hashes where the key is the library name and
+  # the value is a human-readable string showing the opening hours
+  # (or that the library is closed).
+
+  calendarUrl = config['googleUrl'].gsub(/::ID::/, config[library]['id'])
+  calendarUrl << "&start-min=" + startmin
+  calendarUrl << "&start-max=" + startmax
+  STDERR.puts "  " + library if options[:verbose]
+  # puts "  " + calendarUrl
+
+  begin
+    calendarXML = Net::HTTP.get_response(URI.parse(calendarUrl)).body
+  rescue Exception => e
+    STDERR.puts "Couldn't get #{library} calendar from Google"
+    STDERR.puts "Can't connect to Google!? Aborting"
+    STDERR.puts e
+    exit 1
+  end
+
+  begin
+    doc = REXML::Document.new(calendarXML)
+  rescue Exception => e
+    STDERR.puts "Can't parse the XML for the #{library} calendar!? Aborting"
+    STDERR.puts e
+    exit 1
+  end
+  doc.root.each_element('//entry') do |entry|
+    date = Time.parse(entry.elements['gd:when'].attributes['startTime']).strftime("%Y%m%d").to_s
+    open = prettytime(Time.parse(entry.elements['gd:when'].attributes['startTime']))
+    close = prettytime(Time.parse(entry.elements['gd:when'].attributes['endTime']))
+    hours = open + " - " + close
+    hours = "closed" if entry.elements['title'].text =~ /closed/i
+    if library == 'scott_study_space'
+      # Special case.  For the Scott study space we
+      # always want to show the title of the all-day event.
+      schedule[date][library] = entry.elements['title'].text
+    else
+      schedule[date][library] = hours
+    end
+  end
+
+end
+
+STDERR.puts "Writing calendars ..." if options[:verbose]
+schedule.keys.sort {|a,b| a <=> b}.each do |day|
+  # Go through each day for which we collected calendar information,
+  # and dump out fragments of HTML to disk, suitable for including
+  # in a web page.
+
+  STDERR.puts day if options[:verbose]
+  prettydate =  Date.parse(day).strftime("%A, %B %e, %Y")
+
+  dayhtml = ''
+  dayhtml << config['template']
+  mdayhtml = ''
+  mdayhtml << config['mtemplate']
+
+  # Needless duplication, but it works
+  begin
+    dayfile = File.new("#{config['outputDir']}/#{day}.html", "w")
+    dayfile.chmod(0664)
+  rescue Exception => e
+    STDERR.puts "Problem creating #{config['outputDir']}/#{day}.html. Aborting"
+    STDERR.puts e
+    exit 1
+  end
+  begin
+    mdayfile = File.new("#{config['outputDir']}/m-#{day}.html", "w")
+    mdayfile.chmod(0664)
+  rescue Exception => e
+    STDERR.puts "Problem creating #{config['outputDir']}/m-#{day}.html. Aborting"
+    STDERR.puts e
+    exit 1
+  end
+
+  config['libraries'].each do |library|
+    if schedule[day][library].nil?
+      # If a branch has no information for a day, show a blank.
+      # That at least shows something is missing without alarming people.
+      STDERR.puts "  " + library + ": no information. Update your calendar."
+      schedule[day][library] = ''
+    end
+    STDERR.puts "  " + library + ": " + schedule[day][library] if options[:verbose]
+
+    # Replace ::LIBRARY:: in the template with some linked name and hours.
+    libraryLine = "<a class=\"library-branch\" title=\"#{config[library]['title']}\" href=\"#{config[library]['url']}\">#{config[library]['name']}</a> <span class=\"hours\">#{schedule[day][library]}</span>"
+    dayhtml.gsub!(/::#{library.upcase}::/, libraryLine)
+    agendaUrl = config['googleAgendaUrl'].gsub(/::ID::/, config[library]['id']) + "&amp;ctz=America/Toronto&amp;mode=AGENDA"
+    # mlibraryLine = "<a href=\"#{agendaUrl}\">#{config[library]['name']}: #{schedule[day][library]}</a>"
+    mlibraryLine = "#{config[library]['mname']}: #{schedule[day][library]}"
+    mdayhtml.gsub!(/::#{library.upcase}::/, mlibraryLine)
+  end
+
+  dayhtml.gsub!(/::TODAY::/, prettydate)
+  dayfile.write(dayhtml)
+
+  mdayhtml.gsub!(/::TODAY::/, prettydate)
+  mdayfile.write(mdayhtml)
+
+end
+
+##
+# Create the weekly hours file for each library
+#
+##
+
+config['libraries'].each do |library|
+  begin
+    weekfile = File.new("#{config['weeklyDir']}/#{library}_hours.html", "w")
+    weekfile.chmod(0664)
+  rescue Exception => e
+    STDERR.puts "Problem creating #{config['weeklyDir']}/#{library}_hours.html. Aborting"
+    STDERR.puts e
+    exit 1
+  end
+
+  STDERR.puts library.upcase if options[:verbose]
+  
+  weekhtml = ''
+  weekhtml << config['weektemplate']
+
+  # Determine Monday
+  now = Date.today
+  
+  for i in 1..7
+    day_to_get = now - now.wday + i
+    day_hours = schedule[day_to_get.strftime('%Y%m%d')][library]
+
+    if (day_hours)  
+      weekline = "<span class=\"day\">#{day_to_get.strftime('%A')}</span><span class=\"hours\">#{day_hours.upcase}</span>"
+      weekhtml.gsub!(/::#{day_to_get.strftime('%A').upcase}::/, weekline)
+      weekhtml.gsub!(/Monday/, 'LUNDI')
+      weekhtml.gsub!(/Tuesday/, 'MARDI')
+      weekhtml.gsub!(/Wednesday/, 'MERCREDI')
+      weekhtml.gsub!(/Thursday/, 'JEUDI')
+      weekhtml.gsub!(/Friday/, 'VENDREDI')
+      weekhtml.gsub!(/Saturday/, 'SAMEDI')
+      weekhtml.gsub!(/Sunday/, 'DIMANCHE')
+      STDERR.puts day_to_get.strftime('%A') + " " + day_hours if options[:verbose]
+    end
+
+  end
+
+  STDERR.puts weekhtml if options[:verbose]
+
+  weekfile.write(weekhtml)
+
+  STDERR.puts '=============================' if options[:verbose]
+end
+
+
