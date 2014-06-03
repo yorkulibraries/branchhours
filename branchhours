@@ -47,7 +47,8 @@ end
 # Get ready to give Google the start and end times for the daysInAdvance
 # range of days.
 # You may need to change the time zone.
-startmin = (Time.now - config['daysInAdvance']*24*60*60).strftime("%Y-%m-%dT06:00:00-05:00")
+# startmin = (Time.now - config['daysInAdvance']*24*60*60).strftime("%Y-%m-%dT06:00:00-05:00")
+startmin = Time.now.strftime("%Y-%m-%dT06:00:00-05:00") 
 startmax = (Time.now + config['daysInAdvance']*24*60*60).strftime("%Y-%m-%dT06:00:00-05:00")
 
 # Hash to store opening hours, by date, then library
@@ -145,7 +146,7 @@ schedule.keys.sort {|a,b| a <=> b}.each do |day|
     STDERR.puts "  " + library + ": " + schedule[day][library] if options[:verbose]
 
     # Replace ::LIBRARY:: in the template with some linked name and hours.
-    libraryLine = "<a class=\"library-branch\" title=\"#{config[library]['title']}\" href=\"#{config[library]['url']}\">#{config[library]['name']}</a> <span class=\"hours\">#{schedule[day][library]}</span>"
+    libraryLine = "<a class=\"library-branch\" title=\"#{config[library]['title']}\" href=\"#{config[library]['url']}\">#{config[library]['name']}</a> <span class=\"hours\">#{schedule[day][library].upcase}</span>"
     dayhtml.gsub!(/::#{library.upcase}::/, libraryLine)
     agendaUrl = config['googleAgendaUrl'].gsub(/::ID::/, config[library]['id']) + "&amp;ctz=America/Toronto&amp;mode=AGENDA"
     # mlibraryLine = "<a href=\"#{agendaUrl}\">#{config[library]['name']}: #{schedule[day][library]}</a>"
@@ -181,11 +182,9 @@ config['libraries'].each do |library|
   weekhtml = ''
   weekhtml << config['weektemplate']
 
-  # Determine Monday
-  now = Date.today
-  
-  for i in 1..7
-    day_to_get = now - now.wday + i
+  for i in 0..6
+    # day_to_get = now - now.wday + i
+    day_to_get = Time.now + (i*24*60*60)
     day_hours = schedule[day_to_get.strftime('%Y%m%d')][library]
 
     if (day_hours)  

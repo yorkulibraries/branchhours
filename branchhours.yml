@@ -22,29 +22,17 @@ defaultFile: today.html
 # <li> ::SCOTT_STUDY_SPACE::</li>
 
 template: |
-  <div id="box-libraries-and-collections">
-  HOURS &amp; LOCATIONS  <a style="font-size: smaller;" href="/ccm/Home/Hours/">detailed hours &gt;&gt;</a>
 
-  <div id="hours">
-  <p>Today is ::TODAY::.</p>
   <ul class="branches">
   <li> ::SCOTT::
-  <ul class="subbranch">
-  <li> ::SCOTT_RESEARCH:: </li>
   <li> ::ARCHIVES:: </li>
-  <li> ::SMIL:: </li>
   <li> ::MAP:: </li>
-  <li> ::ACCESSIBILITY_SERVICES:: </li>
-  <li> ::RESOURCE_SHARING:: </li>
-  </ul>
-  </li>
+  <li> ::SMIL:: </li>
   <li> ::BRONFMAN:: </li>
   <li> ::FROST:: </li>
   <li> ::LAW:: </li>
   <li> ::STEACIE:: </li>
   </ul>
-  </div>
-  </div> <!-- box-libraries-and-collections -->
 
 mtemplate: |
 
@@ -95,35 +83,35 @@ accessibility_services:
   url: /cms/accessibilityservices/
 
 archives:
-  name: Archives
+  name: Clara Thomas Archives and Special Collection
   mname: Archives
   title: The Clara Thomas Archives and Special Collections are on the third floor of the Scott Library
   id: 85mt13bcn119dgs3svl0vp4l5c
   url: /cms/archivesspecialcollections/
 
 bronfman:
-  name: Bronfman (business)
+  name: Bronfman Business Library
   mname: Bronfman
   title: The Peter F. Bronfman Business Library is on the second floor of the Schulich School of Business
   id: m7c4318hko4aum2kmucq0g7kts
   url: /cms/bbl/
 
 frost:
-  name: Frost (Glendon)
+  name: Frost Library 
   mname: Frost
   title: The Leslie Frost Library is on the Glendon Campus
   id: m6imnub2uuugc472mgbjshe7dk
   url: /cms/frost/
 
 law:
-  name: Osgoode (law)
+  name: Osgoode Law Library
   mname: Osgoode
   title: The Osgoode Law Library is in Osgoode Law School
   id: bi3cua07pdt6r9qt81r5nvtqs8
   url: http://www.osgoode.yorku.ca/library/
 
 map:
-  name: Map
+  name: Map Library
   mname: Map
   title: The Map Library is on the first floor of the Scott Library
   id: 1nrnldvrvqbvoq2ctgsjct9nn8
@@ -137,7 +125,7 @@ resource_sharing:
   url: /cms/resourcesharing/
 
 scott:
-  name: Scott
+  name: Scott Library
   mname: Scott
   title: The Scott Library entrance is on the south side of Central Square
   id: rcmuv3rj2tk8kjcaja59njl1gs
@@ -158,14 +146,14 @@ scott_study_space:
   url: /cms/facilitiesandequipment/latenightstudy/
 
 smil:
-  name: SMIL
+  name: Sound and Moving Image Library
   mname: SMIL
   title: The Sound and Moving Image Library is on the first floor of the Scott Library
   id: pri08tmnju1th02vv37qmrs8ic
   url: /cms/smil/
 
 steacie:
-  name: Steacie (science)
+  name: Steacie Science & Engineering Library
   mname: Steacie
   title: The Steacie Science and Engineering Library is on Campus Walk
   id: ss5b4rsslpjk0allmc0ej2b0no
