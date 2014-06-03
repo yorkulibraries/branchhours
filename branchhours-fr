@@ -35,12 +35,7 @@ end
 
 def prettytime (time)
   # '9 am' and 'noon' are better than '09:00 AM' and '12:00 PM'
-  nice = time.strftime('%I')
-  nice = nice.slice(1,2) if (nice.to_i < 10)
-  nice = nice + ":" + time.strftime('%M') unless (time.strftime('%M').to_i == 0)
-  nice = nice + " " + time.strftime('%p')
-  nice.downcase!
-  nice = "noon" if nice == '12 PM'
+  nice = time.strftime('%kh%M')
   return nice
 end
 
@@ -189,7 +184,7 @@ config['libraries'].each do |library|
     day_hours = schedule[day_to_get.strftime('%Y%m%d')][library]
 
     if (day_hours)  
-      weekline = "<span class=\"day\">#{day_to_get.strftime('%A')}</span><span class=\"hours\">#{day_hours.upcase}</span>"
+      weekline = "<span class=\"day\">#{day_to_get.strftime('%A')}</span><span class=\"hours\">#{day_hours}</span>"
       weekhtml.gsub!(/::#{day_to_get.strftime('%A').upcase}::/, weekline)
       weekhtml.gsub!(/Monday/, 'LUNDI')
       weekhtml.gsub!(/Tuesday/, 'MARDI')
