@@ -71,7 +71,7 @@ config['libraries'].each do |library|
   calendarUrl << "&timeMin=" + startmin
   calendarUrl << "&timeMax=" + startmax
   STDERR.puts "  " + library if options[:verbose]
-  puts "  " + calendarUrl
+  STDERR.puts "  " + calendarUrl if options[:verbose]
 
   begin
     calendarJSON = Net::HTTP.get_response(URI.parse(calendarUrl)).body
@@ -96,19 +96,17 @@ config['libraries'].each do |library|
     open = ""
     close = ""
     if item['start']['date'] # All-day event (will be (must be?) a closing), so ignore hours
-      puts item['start']['date']
-      puts item['start']['date'].class
       date = Time.parse(item['start']['date']).strftime("%Y%m%d")
     elsif item['start']['dateTime'] # Delimited by hours
-      puts item['start']['dateTime']
+      # STDERR.puts item['start']['dateTime']
       date = Time.parse(item['start']['dateTime']).strftime("%Y%m%d").to_s
-      STDERR.puts date
+      # STDERR.puts date
       open = prettytime(Time.parse(item['start']['dateTime']))
-      STDERR.puts open
+      # STDERR.puts open
       close = prettytime(Time.parse(item['end']['dateTime']))
     end
     hours = "#{open} - #{close}"
-    hours = "closed" if item['title'] =~ /closed/i
+    hours = "closed" if item['summary'] =~ /closed/i
     if library == 'scott_study_space'
       # Special case.  For the Scott study space we
       # always want to show the title of the all-day event.
@@ -120,7 +118,7 @@ config['libraries'].each do |library|
 
 end
 
-STDERR.puts schedule
+# STDERR.puts schedule
 
 STDERR.puts "Writing calendars ..." if options[:verbose]
 schedule.keys.sort {|a,b| a <=> b}.each do |day|
