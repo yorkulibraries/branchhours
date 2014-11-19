@@ -9,7 +9,6 @@
 
 require 'net/http'
 require 'optparse'
-# require 'rexml/document'
 require 'json'
 require 'date'
 require 'time'
@@ -49,8 +48,8 @@ end
 # range of days.
 # You may need to change the time zone.
 # startmin = (Time.now - config['daysInAdvance']*24*60*60).strftime("%Y-%m-%dT06:00:00-05:00")
-startmin = Time.now.strftime("%Y-%m-%dT06:00:00-05:00")
-startmax = (Time.now + config['daysInAdvance']*24*60*60).strftime("%Y-%m-%dT06:00:00-05:00")
+timeMin = Time.now.strftime("%Y-%m-%dT06:00:00-05:00")
+timeMax = (Time.now + config['daysInAdvance']*24*60*60).strftime("%Y-%m-%dT06:00:00-05:00")
 
 # Hash to store opening hours, by date, then library
 schedule = Hash.new do |hash, key|
@@ -68,8 +67,8 @@ config['libraries'].each do |library|
 
   calendarUrl = config['googleUrl'].gsub(/::ID::/, config[library]['id'])
   calendarUrl = calendarUrl.gsub(/::KEY::/, config['apikey'])
-  calendarUrl << "&timeMin=" + startmin
-  calendarUrl << "&timeMax=" + startmax
+  calendarUrl << "&timeMin=" + timeMin
+  calendarUrl << "&timeMax=" + timeMax
   STDERR.puts "  " + library if options[:verbose]
   STDERR.puts "  " + calendarUrl if options[:verbose]
 
