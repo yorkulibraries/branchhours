@@ -6,8 +6,10 @@
 # Change time zone as necessary.
 # When getting URLs by hand, append &orderby=starttime&sortorder=ascending
 # to make it more readable.
-googleUrl: http://www.google.com/calendar/feeds/::ID::@group.calendar.google.com/public/full?singleevents=true&ctz=America/Toronto
-googleAgendaUrl: https://www.google.com/calendar/embed?src=::ID::@group.calendar.google.com&ctz=America/Toronto&mode=AGENDA
+googleUrl: https://www.googleapis.com/calendar/v3/calendars/::ID::@group.calendar.google.com/events?key=::KEY::&singleEvents=true&ctz=America/Toronto
+# googleAgendaUrl: https://www.google.com/calendar/embed?src=::ID::@group.calendar.google.com&ctz=America/Toronto&mode=AGENDA
+
+apikey: AIzaSyAxSgg6wWhCJqn6_oVhxmYQVPbByOPEN-Q
 
 # Number of days of calendar information to grab at once.
 daysInAdvance: 10
@@ -48,7 +50,7 @@ mtemplate: |
   <li> <a href="osgoode.html">::LAW::</a></li>
   <li> <a href="steacie.html">::STEACIE::</a></li>
   </ul>
-  
+
 weektemplate: |
       <ul>
       <li> ::MONDAY:: </li>
@@ -57,7 +59,7 @@ weektemplate: |
       <li> ::THURSDAY:: </li>
       <li> ::FRIDAY:: </li>
       <li> ::SATURDAY:: </li>
-      <li> ::SUNDAY:: </li>            
+      <li> ::SUNDAY:: </li>
       </ul>
 
 
@@ -97,7 +99,7 @@ bronfman:
   url: /cms/bbl/
 
 frost:
-  name: Frost Library 
+  name: Frost Library
   mname: Frost
   title: The Leslie Frost Library is on the Glendon Campus
   id: m6imnub2uuugc472mgbjshe7dk
@@ -158,5 +160,3 @@ steacie:
   title: The Steacie Science and Engineering Library is on Campus Walk
   id: ss5b4rsslpjk0allmc0ej2b0no
   url: /cms/steacie/
-
-
