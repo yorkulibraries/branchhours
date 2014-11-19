@@ -13,6 +13,7 @@ require 'json'
 require 'date'
 require 'time'
 require 'yaml'
+require 'open-uri'
 
 options = {}
 options[:verbose] = false
@@ -73,7 +74,11 @@ config['libraries'].each do |library|
   STDERR.puts "  " + calendarUrl if options[:verbose]
 
   begin
-    calendarJSON = Net::HTTP.get_response(URI.parse(calendarUrl)).body
+    # Had issues with Net::HTTP throwing exception of "end of file reached" on production. 
+    # Not sure why but open-uri worked better.
+    
+    #calendarJSON = Net::HTTP.get_response(URI.parse(calendarUrl)).body 
+    calendarJSON = open(calendarUrl).read
   rescue Exception => e
     STDERR.puts "Couldn't get #{library} calendar from Google"
     STDERR.puts "Can't connect to Google!? Aborting"

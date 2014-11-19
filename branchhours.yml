@@ -14,8 +14,8 @@ apikey: AIzaSyAxSgg6wWhCJqn6_oVhxmYQVPbByOPEN-Q
 # Number of days of calendar information to grab at once.
 daysInAdvance: 10
 
-outputDir: /var/www/hours
-weeklyDir: /var/www/hours
+outputDir: ./outputdir
+weeklyDir: ./outputdir
 
 defaultFile: today.html
 

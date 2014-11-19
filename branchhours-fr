@@ -9,10 +9,11 @@
 
 require 'net/http'
 require 'optparse'
-require 'rexml/document'
+require 'json'
 require 'date'
 require 'time'
 require 'yaml'
+require 'open-uri'
 
 options = {}
 options[:verbose] = false
@@ -35,15 +36,24 @@ end
 
 def prettytime (time)
   # '9 am' and 'noon' are better than '09:00 AM' and '12:00 PM'
-  nice = time.strftime('%kh%M')
+  nice = time.strftime('%I')
+  nice = nice.slice(1,2) if (nice.to_i < 10)
+  nice = nice + ":" + time.strftime('%M') unless (time.strftime('%M').to_i == 0)
+  nice = nice + " " + time.strftime('%p')
+  nice.downcase!
+  nice = "noon" if nice == '12 PM'
+  
+  nice =time.strftime('%kh%M') #French Request, override above
+  
   return nice
 end
 
 # Get ready to give Google the start and end times for the daysInAdvance
 # range of days.
 # You may need to change the time zone.
-startmin = (Time.now - config['daysInAdvance']*24*60*60).strftime("%Y-%m-%dT06:00:00-05:00")
-startmax = (Time.now + config['daysInAdvance']*24*60*60).strftime("%Y-%m-%dT06:00:00-05:00")
+# startmin = (Time.now - config['daysInAdvance']*24*60*60).strftime("%Y-%m-%dT06:00:00-05:00")
+timeMin = Time.now.strftime("%Y-%m-%dT06:00:00-05:00")
+timeMax = (Time.now + config['daysInAdvance']*24*60*60).strftime("%Y-%m-%dT06:00:00-05:00")
 
 # Hash to store opening hours, by date, then library
 schedule = Hash.new do |hash, key|
@@ -60,13 +70,18 @@ config['libraries'].each do |library|
   # (or that the library is closed).
 
   calendarUrl = config['googleUrl'].gsub(/::ID::/, config[library]['id'])
-  calendarUrl << "&start-min=" + startmin
-  calendarUrl << "&start-max=" + startmax
+  calendarUrl = calendarUrl.gsub(/::KEY::/, config['apikey'])
+  calendarUrl << "&timeMin=" + timeMin
+  calendarUrl << "&timeMax=" + timeMax
   STDERR.puts "  " + library if options[:verbose]
-  # puts "  " + calendarUrl
+  STDERR.puts "  " + calendarUrl if options[:verbose]
 
   begin
-    calendarXML = Net::HTTP.get_response(URI.parse(calendarUrl)).body
+    # Had issues with Net::HTTP throwing exception of "end of file reached" on production. 
+    # Not sure why but open-uri worked better.
+    
+    #calendarJSON = Net::HTTP.get_response(URI.parse(calendarUrl)).body 
+    calendarJSON = open(calendarUrl).read
   rescue Exception => e
     STDERR.puts "Couldn't get #{library} calendar from Google"
     STDERR.puts "Can't connect to Google!? Aborting"
@@ -75,28 +90,42 @@ config['libraries'].each do |library|
   end
 
   begin
-    doc = REXML::Document.new(calendarXML)
+    calendar  = JSON.parse(calendarJSON)
   rescue Exception => e
-    STDERR.puts "Can't parse the XML for the #{library} calendar!? Aborting"
+    STDERR.puts "Can't parse the JSON for the #{library} calendar!? Aborting"
     STDERR.puts e
     exit 1
   end
-  doc.root.each_element('//entry') do |entry|
-    date = Time.parse(entry.elements['gd:when'].attributes['startTime']).strftime("%Y%m%d").to_s
-    open = prettytime(Time.parse(entry.elements['gd:when'].attributes['startTime']))
-    close = prettytime(Time.parse(entry.elements['gd:when'].attributes['endTime']))
-    hours = open + " - " + close
-    hours = "closed" if entry.elements['title'].text =~ /closed/i
+
+  # puts calendar.to_json
+  calendar['items'].each do |item|
+    date = ""
+    open = ""
+    close = ""
+    if item['start']['date'] # All-day event (will be (must be?) a closing), so ignore hours
+      date = Time.parse(item['start']['date']).strftime("%Y%m%d")
+    elsif item['start']['dateTime'] # Delimited by hours
+      # STDERR.puts item['start']['dateTime']
+      date = Time.parse(item['start']['dateTime']).strftime("%Y%m%d").to_s
+      # STDERR.puts date
+      open = prettytime(Time.parse(item['start']['dateTime']))
+      # STDERR.puts open
+      close = prettytime(Time.parse(item['end']['dateTime']))
+    end
+    hours = "#{open} - #{close}"
+    hours = "closed" if item['summary'] =~ /closed/i
     if library == 'scott_study_space'
       # Special case.  For the Scott study space we
       # always want to show the title of the all-day event.
-      schedule[date][library] = entry.elements['title'].text
+      schedule[date][library] = item['summary']
     else
       schedule[date][library] = hours
     end
   end
 
 end
+
+# STDERR.puts schedule
 
 STDERR.puts "Writing calendars ..." if options[:verbose]
 schedule.keys.sort {|a,b| a <=> b}.each do |day|
@@ -142,7 +171,7 @@ schedule.keys.sort {|a,b| a <=> b}.each do |day|
     # Replace ::LIBRARY:: in the template with some linked name and hours.
     libraryLine = "<a class=\"library-branch\" title=\"#{config[library]['title']}\" href=\"#{config[library]['url']}\">#{config[library]['name']}</a> <span class=\"hours\">#{schedule[day][library]}</span>"
     dayhtml.gsub!(/::#{library.upcase}::/, libraryLine)
-    agendaUrl = config['googleAgendaUrl'].gsub(/::ID::/, config[library]['id']) + "&amp;ctz=America/Toronto&amp;mode=AGENDA"
+    # agendaUrl = config['googleAgendaUrl'].gsub(/::ID::/, config[library]['id']) + "&amp;ctz=America/Toronto&amp;mode=AGENDA"
     # mlibraryLine = "<a href=\"#{agendaUrl}\">#{config[library]['name']}: #{schedule[day][library]}</a>"
     mlibraryLine = "#{config[library]['mname']}: #{schedule[day][library]}"
     mdayhtml.gsub!(/::#{library.upcase}::/, mlibraryLine)
@@ -172,19 +201,17 @@ config['libraries'].each do |library|
   end
 
   STDERR.puts library.upcase if options[:verbose]
-  
+
   weekhtml = ''
   weekhtml << config['weektemplate']
 
-  # Determine Monday
-  now = Date.today
-  
-  for i in 1..7
-    day_to_get = now - now.wday + i
+  for i in 0..6
+    # day_to_get = now - now.wday + i
+    day_to_get = Time.now + (i*24*60*60)
     day_hours = schedule[day_to_get.strftime('%Y%m%d')][library]
 
-    if (day_hours)  
-      weekline = "<span class=\"day\">#{day_to_get.strftime('%A')}</span><span class=\"hours\">#{day_hours}</span>"
+    if (day_hours)
+      weekline = "<span class=\"day\">#{day_to_get.strftime('%A')}</span><span class=\"hours\">#{day_hours.upcase}</span>"
       weekhtml.gsub!(/::#{day_to_get.strftime('%A').upcase}::/, weekline)
       weekhtml.gsub!(/Monday/, 'LUNDI')
       weekhtml.gsub!(/Tuesday/, 'MARDI')
@@ -194,6 +221,7 @@ config['libraries'].each do |library|
       weekhtml.gsub!(/Saturday/, 'SAMEDI')
       weekhtml.gsub!(/Sunday/, 'DIMANCHE')
       weekhtml.gsub!(/closed/, 'FERME')
+      
       STDERR.puts day_to_get.strftime('%A') + " " + day_hours if options[:verbose]
     end
 
@@ -205,5 +233,3 @@ config['libraries'].each do |library|
 
   STDERR.puts '=============================' if options[:verbose]
 end
-
-
