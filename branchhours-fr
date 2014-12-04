@@ -42,6 +42,9 @@ def prettytime (time)
   nice = nice + " " + time.strftime('%p')
   nice.downcase!
   nice = "noon" if nice == '12 PM'
+  
+  nice =time.strftime('%kh%M') #French Request, override above
+  
   return nice
 end
 
@@ -166,7 +169,7 @@ schedule.keys.sort {|a,b| a <=> b}.each do |day|
     STDERR.puts "  " + library + ": " + schedule[day][library] if options[:verbose]
 
     # Replace ::LIBRARY:: in the template with some linked name and hours.
-    libraryLine = "<a class=\"library-branch\" title=\"#{config[library]['title']}\" href=\"#{config[library]['url']}\">#{config[library]['name']}</a> <span class=\"hours\">#{schedule[day][library].upcase}</span>"
+    libraryLine = "<a class=\"library-branch\" title=\"#{config[library]['title']}\" href=\"#{config[library]['url']}\">#{config[library]['name']}</a> <span class=\"hours\">#{schedule[day][library]}</span>"
     dayhtml.gsub!(/::#{library.upcase}::/, libraryLine)
     # agendaUrl = config['googleAgendaUrl'].gsub(/::ID::/, config[library]['id']) + "&amp;ctz=America/Toronto&amp;mode=AGENDA"
     # mlibraryLine = "<a href=\"#{agendaUrl}\">#{config[library]['name']}: #{schedule[day][library]}</a>"
@@ -210,6 +213,15 @@ config['libraries'].each do |library|
     if (day_hours)
       weekline = "<span class=\"day\">#{day_to_get.strftime('%A')}</span><span class=\"hours\">#{day_hours.upcase}</span>"
       weekhtml.gsub!(/::#{day_to_get.strftime('%A').upcase}::/, weekline)
+      weekhtml.gsub!(/Monday/, 'LUNDI')
+      weekhtml.gsub!(/Tuesday/, 'MARDI')
+      weekhtml.gsub!(/Wednesday/, 'MERCREDI')
+      weekhtml.gsub!(/Thursday/, 'JEUDI')
+      weekhtml.gsub!(/Friday/, 'VENDREDI')
+      weekhtml.gsub!(/Saturday/, 'SAMEDI')
+      weekhtml.gsub!(/Sunday/, 'DIMANCHE')
+      weekhtml.gsub!(/closed/, 'FERME')
+      
       STDERR.puts day_to_get.strftime('%A') + " " + day_hours if options[:verbose]
     end
 
